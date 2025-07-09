@@ -1,0 +1,18 @@
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.vsidx
+
+# ASP.NET
+bin/
+obj/
+
+# Angular & Node
+node_modules/
+dist/
+.angular/
+
+# Sistema
+Thumbs.db
+.DS_Store

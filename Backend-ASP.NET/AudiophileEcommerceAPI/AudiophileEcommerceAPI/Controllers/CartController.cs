@@ -1,6 +1,11 @@
-﻿namespace AudiophileEcommerceAPI.Controllers
+﻿using Microsoft.AspNetCore.Mvc;
+
+namespace AudiophileEcommerceAPI.Controllers
 {
-    public class CartController
+    [ApiController]
+    [Route("api/[controller]")]
+    public class CartController : ControllerBase
     {
+        private readonly 
     }
 }

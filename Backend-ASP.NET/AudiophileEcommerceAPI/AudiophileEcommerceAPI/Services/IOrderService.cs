@@ -1,4 +1,5 @@
 ﻿using AudiophileEcommerceAPI.DTOs;
+using AudiophileEcommerceAPI.Models;
 using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 
 namespace AudiophileEcommerceAPI.Services
@@ -7,7 +8,7 @@ namespace AudiophileEcommerceAPI.Services
     {
         Task<IEnumerable<OrderDTO>> GetAllOrders();
         Task<OrderDTO?> GetOrderById(int id);
-        Task<OrderDTO> CreateOrder(OrderDTO orderDTO);
+        Task<Order> CreateOrder(OrderDTO orderDTO);
         Task<bool> UpdateOrder(OrderDTO orderDTO);
         Task<bool> DeleteOrder(int id);
 

@@ -23,10 +23,27 @@ namespace AudiophileEcommerceAPI.Data
         public DbSet<CustomerInfo> Customers { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
+        public DbSet<Cart> Carts { get; set; }
+        public DbSet<CartItem> CartItems { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Configurazioni aggiuntive (relazioni, vincoli, seed, ecc.)
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<CustomerInfo>()
+                .HasOne(c => c.Cart)
+                .WithOne(c => c.CustomerInfo)
+                .HasForeignKey<Cart>(c => c.CustomerId);
+
+            modelBuilder.Entity<CartItem>()
+                .HasOne(ci => ci.Cart)
+                .WithMany(c => c.Items)
+                .HasForeignKey(ci => ci.CartId);
+
+            modelBuilder.Entity<CartItem>()
+                .HasOne(ci => ci.Product)
+                .WithMany()
+                .HasForeignKey(ci => ci.ProductId);
         }
 
     }

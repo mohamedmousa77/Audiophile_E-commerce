@@ -1,22 +1,46 @@
-### Audiophile E-commerce web application
+### 🛍️ Audiophile E-commerce Web Application
 ---
 
-## 🛠️ Tecnologie utilizzate
+## 🛠️ Technologies Used
 
-### Frontend
+### 🎨 Frontend – Angular
+
 - **Angular 17+**
-- **SCSS / Tailwind CSS**
-- - **TypeScript**, Reactive Forms, Routing, Lazy Loading
 
-### Backend
-- **ASP.NET Core Web API**
-- **Entity Framework Core**
-- **SQLite / SQL Server**
-- **Architettura a microservizi**
-- **Pattern multilivello (Controller → Service → Data → DTO/Model)**
-- **Dependency Injection nativa**
-- **Swagger**
+- **TypeScript**
+
+- **Reactive Forms, Routing, Lazy Loading**
+
+- **Bootstrap 5 + Custom CSS**
+
+- **HTTPClient for backend communication**
+
 ---
+
+### ⚙️ Backend
+
+- **ASP.NET Core Web API**
+
+- **Entity Framework Core (ORM)**
+
+- **SQL Server LocalDB (or SQLite as alternative)**
+
+- **Swagger for interactive API documentation**
+
+- **Postman for API testing**
+
+- **Microservices-inspired architecture**
+
+- **Multi-layered pattern → Controller → Services → Data → Models/DTOs**
+
+- **Built-in Dependency Injection**
+
+- **Data Annotations & Fluent API for validation and DB configuration**
+
+- **EF Core Migrations to manage database schema**
+
+---
+
 ### 🔹 Radice del progetto
 ```
 /ecommerce-app
@@ -33,18 +57,18 @@
 │
 ├── src/
 │   ├── app/
-│   │   ├── core/             <-- Auth, Guards, Services comuni
-│   │   ├── shared/           <-- Componenti condivisi (header, footer, modals)
-│   │   ├── cart/             <-- Gestione carrello
-│   │   ├── checkout/         <-- Checkout form e validazioni
-│   │   ├── products/         <-- Product list, detail
-│   │   ├── order/            <-- Order summary, confirmation
-│   │   ├── models/           <-- Interfaces e tipi TypeScript
+│   │   ├── core/             <-- Auth, Interceptors, Global services
+│   │   ├── shared/           <-- Reusable components (navbar, modals)
+│   │   ├── cart/             <-- Cart logic
+│   │   ├── checkout/         <-- Checkout form and validations
+│   │   ├── products/         <-- Product listing and details
+│   │   ├── order/            <-- Order summary and confirmation
+│   │   ├── models/           <-- Interfaces and type definitions
 │   │   └── app-routing.module.ts
 │   └── assets/
-│       └── images/           <-- Immagini prodotti
+│       └── images/           <-- Product images
 ├── environments/
-│   └── environment.ts        <-- API URLs
+│   └── environment.ts        <-- API base URLs
 └── angular.json
 ```
 
@@ -57,20 +81,26 @@
 │   ├── Controllers/
 │   │   ├── ProductsController.cs
 │   │   ├── OrdersController.cs
-│   │   └── CartController.cs (opzionale, se persistente lato server)
+│   │   └── CartController.cs
 │   ├── Models/
+│   │   ├── Cart.cs, CartItem.cs
 │   │   ├── Product.cs
-│   │   ├── Order.cs
-│   │   ├── OrderItem.cs
+│   │   ├── Order.cs, OrderItem.cs
 │   │   └── CustomerInfo.cs
 │   ├── DTOs/
-│   │   └── OrderDTO.cs, ProductDTO.cs
+│   │   └── OrderDTO.cs,
+│   │   └── ProductDTO.cs
+│   │   └── OrderItem.cs
 │   ├── Data/
 │   │   ├── AppDbContext.cs
 │   │   └── SeedData.cs
 │   ├── Services/
-│   │   └── OrderService.cs
-│   └── Program.cs
+│   │   ├── ProductService.cs / IProductService.cs
+│   │   ├── CartService.cs / ICartService.cs
+│   │   ├── OrderService.cs / IOrderService.cs
+│   │   └── SeedDataService.cs / ISeedDataService.cs
+│   ├── Migrations/  <-- EF Core DB migrations
+│   └── Program.cs   <-- App entry point & service configuration
 ├── Ecommerce.API.sln
 └── appsettings.json
 ```

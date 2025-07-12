@@ -30,20 +30,29 @@ namespace AudiophileEcommerceAPI.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<CustomerInfo>()
-                .HasOne(c => c.Cart)
-                .WithOne(c => c.CustomerInfo)
-                .HasForeignKey<Cart>(c => c.CustomerId);
+            modelBuilder.Entity<Order>()
+                .Property(o => o.Shipping)
+                .HasColumnType("decimal(18,2)");
 
-            modelBuilder.Entity<CartItem>()
-                .HasOne(ci => ci.Cart)
-                .WithMany(c => c.Items)
-                .HasForeignKey(ci => ci.CartId);
+            modelBuilder.Entity<Order>()
+                .Property(o => o.Subtotal)
+                .HasColumnType("decimal(18,2)");
 
-            modelBuilder.Entity<CartItem>()
-                .HasOne(ci => ci.Product)
-                .WithMany()
-                .HasForeignKey(ci => ci.ProductId);
+            modelBuilder.Entity<Order>()
+                .Property(o => o.Total)
+                .HasColumnType("decimal(18,2)");
+
+            modelBuilder.Entity<Order>()
+                .Property(o => o.VAT)
+                .HasColumnType("decimal(18,2)");
+
+            modelBuilder.Entity<OrderItem>()
+                .Property(i => i.UnitPrice)
+                .HasColumnType("decimal(18,2)");
+
+            modelBuilder.Entity<Product>()
+                .Property(p => p.Price)
+                .HasColumnType("decimal(18,2)");
         }
 
     }

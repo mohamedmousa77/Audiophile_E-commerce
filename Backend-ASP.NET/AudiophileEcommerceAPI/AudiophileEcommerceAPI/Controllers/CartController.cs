@@ -57,5 +57,18 @@ namespace AudiophileEcommerceAPI.Controllers
             }
             return BadRequest("Failed to clear cart.");
         }
+        [HttpPut("{customerId}/update/{productId}")]
+        public async Task<ActionResult> updateItem (int customerId, int productId, [FromQuery] int quantity)
+        {
+            bool updatedItem = await _cartService.UpdateCartItem(customerId, productId, quantity);
+            if (updatedItem)
+            {
+                return Ok("Item quantity updated successfully");
+            } else
+            {
+                return BadRequest("Failed to update the item quantity.");
+            }
+        }
+
     }
 }

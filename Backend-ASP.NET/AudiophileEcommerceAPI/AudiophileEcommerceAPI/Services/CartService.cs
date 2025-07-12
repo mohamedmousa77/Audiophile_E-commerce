@@ -16,7 +16,10 @@ namespace AudiophileEcommerceAPI.Services
         {
             var cart = await GetCartByCustomerId( customerId);
             if (cart == null) return false;
+            
             var existingItem = cart.Items.FirstOrDefault(item => item.ProductId == productId);
+            
+            if (quantity <= 0) return false;
             if (existingItem != null)
             {
                 existingItem.Quantity += quantity;
@@ -50,11 +53,11 @@ namespace AudiophileEcommerceAPI.Services
             var cart =await _appDbContext.Carts
                 .Include(c => c.Items)
                 .ThenInclude(ci => ci.Product)
-                .FirstOrDefaultAsync(c => c.CustomerId == customerId);
+                .FirstOrDefaultAsync(c => c.CustomerInfoId == customerId);
 
             if (cart == null)
             {
-                cart = new Cart { CustomerId = customerId, Items = new List<CartItem>() };
+                cart = new Cart { CustomerInfoId = customerId, Items = new List<CartItem>() };
 
                 _appDbContext.Carts.Add(cart);
                 await _appDbContext.SaveChangesAsync();
@@ -75,9 +78,27 @@ namespace AudiophileEcommerceAPI.Services
             return true;
         }
 
-        public Task<bool> UpdateCartItem(int productId, int quantity)
+        public async Task<bool> UpdateCartItem(int customerId, int productId, int quantity)
         {
-            throw new NotImplementedException();
+            var cart = await GetCartByCustomerId(customerId);
+            if (cart == null) return false;
+
+            var item = cart.Items.FirstOrDefault(i => i.ProductId == productId);
+            if (item == null) return false;
+
+            if (quantity <= 0)
+            {
+                _appDbContext.CartItems.Remove(item);
+            }
+            else
+            {
+                item.Quantity = quantity;
+            }
+
+            await _appDbContext.SaveChangesAsync();
+            return true;
+
+
         }
     }
 }

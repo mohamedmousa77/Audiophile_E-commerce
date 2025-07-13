@@ -57,19 +57,24 @@
 │
 ├── src/
 │   ├── app/
-│   │   ├── core/             <-- Auth, Interceptors, Global services
-│   │   ├── shared/           <-- Reusable components (navbar, modals)
-│   │   ├── cart/             <-- Cart logic
-│   │   ├── checkout/         <-- Checkout form and validations
-│   │   ├── products/         <-- Product listing and details
-│   │   ├── order/            <-- Order summary and confirmation
-│   │   ├── models/           <-- Interfaces and type definitions
+│   │   ├── core/               <-- Auth, Interceptors, Global services
+│   │   ├── shared/             <-- Reusable UI components (navbar, footer, modals)
+│   │   ├── pages/              <-- Main route pages
+│   │   │   ├── home/           <-- Homepage with hero section and highlights
+│   │   │   ├── categories/     <-- Category listing: Headphones, Speakers, Earphones
+│   │   │   ├── products/       <-- Product detail page
+│   │   │   ├── cart/           <-- Cart page and logic
+│   │   │   ├── checkout/       <-- Checkout form and validation
+│   │   │   └── order/          <-- Order confirmation / summary
+│   │   ├── models/             <-- TypeScript interfaces and data types
+│   │   ├── directives/         <-- Custom Angular directives (e.g., hover effects)
+│   │   ├── pipes/              <-- Custom Angular pipes (e.g., truncate, currency formatting)
 │   │   └── app-routing.module.ts
-│   └── assets/
-│       └── images/           <-- Product images
-├── environments/
-│   └── environment.ts        <-- API base URLs
-└── angular.json
+│   ├── assets/
+│   │   └── images/             <-- Product images and assets
+│   ├── environments/
+│   │   └── environment.ts      <-- API base URLs and environment config
+│   └── angular.json
 ```
 
 ### 📁 Backend (ASP.NET Web API)

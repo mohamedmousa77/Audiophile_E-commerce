@@ -53,6 +53,11 @@ namespace AudiophileEcommerceAPI.Data
             modelBuilder.Entity<Product>()
                 .Property(p => p.Price)
                 .HasColumnType("decimal(18,2)");
+
+            modelBuilder.Entity<CustomerInfo>()
+                .HasOne(c => c.Cart)
+                .WithOne()
+                .HasForeignKey<Cart>(c => c.CustomerInfoId);
         }
 
     }

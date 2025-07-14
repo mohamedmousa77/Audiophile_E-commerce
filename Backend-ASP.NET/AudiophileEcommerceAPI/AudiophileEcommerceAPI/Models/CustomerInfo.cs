@@ -10,6 +10,6 @@
         public string City { get; set; } = string.Empty;
         public string Country { get; set; } = string.Empty;
         public string ZipCode { get; set; } = string.Empty;
-        public Cart Cart { get; set; }
+        public Cart? Cart { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using AudiophileEcommerceAPI.Services;
+﻿using AudiophileEcommerceAPI.DTOs;
+using AudiophileEcommerceAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AudiophileEcommerceAPI.Controllers
@@ -15,14 +16,13 @@ namespace AudiophileEcommerceAPI.Controllers
         }
 
         [HttpPost("{customerId}/add")]
-        public async Task<ActionResult> AddToCart(int customerId, [FromQuery] int productId, [FromQuery] int quantity)
+        public async Task<ActionResult> AddToCart(int customerId, [FromBody] AddToCartDTO data)
         {
-            var result = await _cartService.AddToCart(customerId, productId, quantity);
-            if (result)
-            {
-                return Ok("Item added to cart successfully.");
-            }
-            return BadRequest("Failed to add item to cart.");
+            var result = await _cartService.AddToCart(customerId, data.ProductId, data.Quantity);
+            
+            return result 
+                ? Ok("Item added to cart successfully.")
+                : BadRequest("Failed to add item to cart.");
         }
 
         [HttpGet("{customerId}")]
@@ -58,7 +58,7 @@ namespace AudiophileEcommerceAPI.Controllers
             return BadRequest("Failed to clear cart.");
         }
         [HttpPut("{customerId}/update/{productId}")]
-        public async Task<ActionResult> updateItem (int customerId, int productId, [FromQuery] int quantity)
+        public async Task<ActionResult> updateItem (int customerId, int productId, [FromBody] int quantity)
         {
             bool updatedItem = await _cartService.UpdateCartItem(customerId, productId, quantity);
             if (updatedItem)

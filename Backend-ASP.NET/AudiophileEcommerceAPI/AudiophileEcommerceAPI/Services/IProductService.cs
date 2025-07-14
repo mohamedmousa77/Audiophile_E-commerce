@@ -7,6 +7,7 @@ namespace AudiophileEcommerceAPI.Services
     {
         Task<IEnumerable<Product>> GetAllProducts();
         Task<Product?> GetProductById(int id);
+        Task<IEnumerable<Product>> GetByCategory(string category);
 
         Task<ProductDTO> CreateProduct(Product product);
 

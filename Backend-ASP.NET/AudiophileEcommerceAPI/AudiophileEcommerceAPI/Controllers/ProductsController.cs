@@ -25,6 +25,14 @@ namespace AudiophileEcommerceAPI.Controllers
             if (product == null) return NotFound();
             return Ok(product);
         }
+
+        [HttpGet("category/{category}")]
+        public async Task<ActionResult<IEnumerable<Product>>> GetByCategory(string category)
+        {
+            var products = await _productService.GetByCategory(category);
+            return Ok(products);
+        }
+
         [HttpPost]
         public async Task<ActionResult<Product>> Create([FromBody] Product product)
         {

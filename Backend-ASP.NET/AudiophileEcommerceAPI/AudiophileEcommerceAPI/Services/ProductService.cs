@@ -64,5 +64,13 @@ namespace AudiophileEcommerceAPI.Services
             await _appDbContext.SaveChangesAsync();
             return true;
         }
+
+        public async Task<IEnumerable<Product>> GetByCategory(string category)
+        {
+            return await _appDbContext.Products
+                .Where(p => p.Category.ToLower() == category.ToLower())
+                .ToListAsync();
+        }
+
     }
 }

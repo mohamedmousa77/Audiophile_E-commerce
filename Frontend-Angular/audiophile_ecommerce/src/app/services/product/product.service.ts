@@ -2,13 +2,16 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Product } from '../../models/product';
-import { enviroment } from '../../environments/enviroment';
+import { ApiService } from '../api/api.service';
 @Injectable({
   providedIn: 'root'
 })
 export class ProductService {
-  private apiUrl = `${enviroment.apiUrl}/products`
-  constructor(private http: HttpClient) { }
+  private apiUrl = '';
+
+  constructor(private http: HttpClient, private apiServices: ApiService) { 
+    this.apiUrl = this.apiServices.getBaseUrl + '/products';
+  }
 
   getAll(): Observable<Product[]> {
     return this.http.get<Product[]>(this.apiUrl);
@@ -16,6 +19,10 @@ export class ProductService {
 
   getProductById(id: number): Observable<Product>{
     return this.http.get<Product>(`${this.apiUrl}/${id}`);
+  }
+
+  getProductsByCategory(category: string): Observable<Product[]> {
+    return this.http.get<Product[]>(`${this.apiUrl}/category/${category}`);
   }
 
   createNewProduct(product: Product): Observable<Product>{

@@ -14,12 +14,12 @@ namespace AudiophileEcommerceAPI.Services
 
         public async Task<bool> AddToCart(int customerId, int productId, int quantity)
         {
+            if (quantity <= 0) return false;
+
             var cart = await GetCartByCustomerId( customerId);
             if (cart == null) return false;
             
-            var existingItem = cart.Items.FirstOrDefault(item => item.ProductId == productId);
-            
-            if (quantity <= 0) return false;
+            var existingItem = cart.Items!.FirstOrDefault(item => item.ProductId == productId);                     
             if (existingItem != null)
             {
                 existingItem.Quantity += quantity;
@@ -32,7 +32,7 @@ namespace AudiophileEcommerceAPI.Services
                     Quantity = quantity,
                     CartId = cart.Id
                 };
-                cart.Items.Add(newItem);
+                cart.Items!.Add(newItem);
             }
 
             await _appDbContext.SaveChangesAsync(); 

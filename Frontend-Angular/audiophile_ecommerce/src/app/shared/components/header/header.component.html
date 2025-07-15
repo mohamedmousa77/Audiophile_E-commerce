@@ -1,12 +1,17 @@
-<header class="bg-black text-white py-3 border-bottom border-dark">
-  <div class="container d-flex align-items-center justify-content-between">
-    <div class="logo fw-bold fs-4">audiophile</div>
+<header class="main-header fixed-top">
+  <div class="container d-flex align-items-center justify-content-between py-3">
+    <a routerLink="/" class="logo d-flex align-items-center gap-2 text-decoration-none text-white">
+      <img src="main-logo.png" alt="Audiophile Logo" class="logo-img" />
+      <span class="fw-bold fs-4">audiophile</span>
+    </a>
+
     <nav class="d-flex gap-4 text-uppercase">
-      <a routerLink="/" class="text-white text-decoration-none">Home</a>
-      <a routerLink="/category/headphones" class="text-white text-decoration-none">Headphones</a>
-      <a routerLink="/category/speakers" class="text-white text-decoration-none">Speakers</a>
-      <a routerLink="/category/earphones" class="text-white text-decoration-none">Earphones</a>
+      <a routerLink="/" routerLinkActive="active" class="nav-link">Home</a>
+      <a routerLink="/category/headphones" routerLinkActive="active" class="nav-link">Headphones</a>
+      <a routerLink="/category/speakers" routerLinkActive="active" class="nav-link">Speakers</a>
+      <a routerLink="/category/earphones" routerLinkActive="active" class="nav-link">Earphones</a>
     </nav>
+
     <a routerLink="/cart" class="text-white">
       <i class="fas fa-shopping-cart fa-lg"></i>
     </a>

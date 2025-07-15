@@ -1,0 +1,36 @@
+
+<section class="promotions-container-wrapper">
+    <div class="promotions-container">
+        <!-- ZX9 SPEAKER -->
+        <div class="zx9-speaker">
+            <img  [src]="zx9Product.imageUrl" [alt]="zx9Product.alt" class="zx9-image" />
+            <div class="zx9-content">
+            <h2>{{ zx9Product.title }}</h2>
+            <p>{{ zx9Product.description }}</p>
+            <button >SEE PRODUCT</button>
+            </div>
+        </div>
+
+<!-- ZX7 SPEAKER -->
+<div class="zx7-speaker">
+  <div class="zx7-content">
+    <h3>{{ zx7Product.title }}</h3>
+    <button class="outline">SEE PRODUCT</button>
+  </div>
+    <img [src]="zx7Product.imageUrl" [alt]="zx7Product.alt" class="zx7-image" />
+</div>
+
+<!-- YX1 EARPHONES -->
+<div class="yx1-wrapper">
+  <div class="yx1-img">
+    <img [src]="yx1Product.imageUrl"[alt]="yx1Product.alt"/>
+  </div>
+  <div class="yx1-content">
+    <h3>{{ yx1Product.title }}</h3>
+    <a class="outline">SEE PRODUCT</a>
+  </div>
+</div>
+
+
+  </div>
+</section>

@@ -3,10 +3,11 @@ import { gsap } from 'gsap';
 import {ScrollTrigger} from 'gsap/ScrollTrigger';
 import { AnimationOptions } from 'ngx-lottie';
 import { CommonModule } from '@angular/common';
+import { PromotionsComponent } from './promotions/promotions.component';
 
 @Component({
   selector: 'app-home',
-  imports: [CommonModule],
+  imports: [CommonModule, PromotionsComponent ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })

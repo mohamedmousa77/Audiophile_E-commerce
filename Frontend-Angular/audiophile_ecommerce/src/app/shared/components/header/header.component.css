@@ -1,4 +1,41 @@
-header {
-  font-size: 14px;
-  letter-spacing: 1px;
+.main-header {
+  background-color: black;
+  color: white;
+  width: 100%;
+  border-bottom: 1px solid #222;
+  z-index: 1000;
+  transition: all 0.4s ease;
+  padding: 1.5rem 0;
+}
+
+.main-header.scrolled {
+  background-color: #111;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  padding: 0.6rem 0;
+}
+
+.logo-img {
+  height: 66px;
+  width: auto;
+  transition: transform 0.3s ease;
+
+}
+.main-header.scrolled .logo-img {
+  transform: scale(0.85);
+}
+.nav-link {
+  color: white;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.nav-link:hover,
+.nav-link.active {
+  color: #d87d4a;
+}
+
+.fixed-top {
+  position: fixed;
+  top: 0;
+  left: 0;
 }

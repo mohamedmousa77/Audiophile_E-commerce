@@ -1,5 +1,7 @@
 ### 🛍️ Audiophile E-commerce Web Application
 ---
+<img width="700" height="513" alt="project-overview" src="https://github.com/user-attachments/assets/f82c3092-c955-494c-8b13-e8431759087c" />
+
 
 ## 🛠️ Technologies Used
 

@@ -22,7 +22,9 @@ export class ProductService {
   }
 
   getProductsByCategory(category: string): Observable<Product[]> {
-    return this.http.get<Product[]>(`${this.apiUrl}/category/${category}`);
+    return this.http.get<Product[]>(`${this.apiUrl}/category/${category}`,
+      {headers: this.apiServices.getheaders()}
+    );
   }
 
   createNewProduct(product: Product): Observable<Product>{

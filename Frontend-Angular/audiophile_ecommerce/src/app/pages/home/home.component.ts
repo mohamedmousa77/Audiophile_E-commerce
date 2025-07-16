@@ -7,6 +7,7 @@ import { CommonModule } from '@angular/common';
 import { PromotionsComponent } from './promotions/promotions.component';
 import { AboutComponent } from './about/about.component';
 
+import { Router } from '@angular/router';
 gsap.registerPlugin(ScrollTrigger);
 
 @Component({
@@ -18,6 +19,8 @@ gsap.registerPlugin(ScrollTrigger);
 })
 export class HomeComponent implements AfterViewInit{
   // @ViewChild('categoryCard', { static: false, read: ElementRef }) categoryCards!: ElementRef;
+
+  constructor(private router: Router) {}
 
   ngAfterViewInit(): void {
     setTimeout(() => {
@@ -42,5 +45,10 @@ export class HomeComponent implements AfterViewInit{
     {title: 'SPEAKERS', image:'3D_Speaker-image.png', },
     {title: 'EARPHONES', image:'earphones-image.png', },
   ]
+
+  navigateToCategory(category: string): void {
+    this.router.navigate(['/category', category]);
+  }
+
 
 }

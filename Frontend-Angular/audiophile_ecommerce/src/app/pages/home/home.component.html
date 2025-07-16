@@ -27,7 +27,7 @@
 <section class="categories-section text-center container my-5 category-container">
      <div class="row justify-content-center">
     <div class="col-md-4" *ngFor="let cat of categories">
-      <div class="category-card">
+      <div class="category-card" (click)="navigateToCategory(cat.title)" >
         <div class="category-image">
           <img [src]="cat.image" alt="{{cat.title}}">
         </div>

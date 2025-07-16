@@ -23,45 +23,49 @@
   </div>
 </section>
 
-<!-- Section for Gategories -->
 <!-- Categories Section -->
-<section class="categories-section container my-5">
-  <div class="row text-center justify-content-center g-4">
+<section class="categories-section text-center container my-5 category-container">
+     <div class="row justify-content-center">
+    <div class="col-md-4" *ngFor="let cat of categories">
+      <div class="category-card">
+        <div class="category-image">
+          <img [src]="cat.image" alt="{{cat.title}}">
+        </div>
+        <div class="category-title">{{ cat.title }}</div>
+        <div class="shop-link">
+          Shop
+          <span class="arrow">&rarr;</span>
+        </div>
+      </div>
+    </div>
 
-    <!-- Headphones -->
-<div class="category-item text-center">
-  <div class="category-image">
-    <img src="headphones-image.png" alt="Headphones">
-  </div>
-  <h3 class="category-title">HEADPHONES</h3>
-  <p class="shop-link">
-    SHOP <span class="arrow">&rarr;</span>
-  </p>
-</div>
+        <!-- Speakers
+        <div class="category-item text-center">
+          <div class="category-image">
+            <img src="" alt="Headphones">
+          </div>
+          <h3 class="category-title">HEADPHONES</h3>
+          <p class="shop-link">
+            SHOP <span class="arrow">&rarr;</span>
+          </p>
+        </div>
 
-    <!-- Speakers -->
-<div class="category-item text-center">
-  <div class="category-image">
-    <img src="3D_Speaker-image.png" alt="Headphones">
-  </div>
-  <h3 class="category-title">HEADPHONES</h3>
-  <p class="shop-link">
-    SHOP <span class="arrow">&rarr;</span>
-  </p>
-</div>
-
-    <!-- Earphones -->
-<div class="category-item text-center">
-  <div class="category-image">
-    <img src="earphones-image.png" alt="Headphones">
-  </div>
-  <h3 class="category-title">HEADPHONES</h3>
-  <p class="shop-link">
-    SHOP <span class="arrow">&rarr;</span>
-  </p>
-</div>
-  </div>
+        Earphones 
+        <div class="category-item text-center">
+          <div class="category-image">
+            <img src="" alt="Headphones">
+          </div>
+          <h3 class="category-title">HEADPHONES</h3>
+          <p class="shop-link">
+            SHOP <span class="arrow">&rarr;</span>
+          </p>
+        </div> -->
+      </div>
+    <!-- </div> -->
 </section>
 
 <!-- Promotions Sections -->
  <app-promotions></app-promotions>
+
+ <!-- About Section -->
+  <app-about></app-about>

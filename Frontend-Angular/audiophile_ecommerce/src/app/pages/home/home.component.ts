@@ -1,32 +1,46 @@
-import { Component } from '@angular/core';
+import { Component, AfterViewInit} from '@angular/core';
 import { gsap } from 'gsap';
 import {ScrollTrigger} from 'gsap/ScrollTrigger';
-import { AnimationOptions } from 'ngx-lottie';
+// import { AnimationOptions } from 'ngx-lottie';
 import { CommonModule } from '@angular/common';
+
 import { PromotionsComponent } from './promotions/promotions.component';
+import { AboutComponent } from './about/about.component';
+
+gsap.registerPlugin(ScrollTrigger);
 
 @Component({
   selector: 'app-home',
-  imports: [CommonModule, PromotionsComponent ],
+  standalone: true,
+  imports: [CommonModule, PromotionsComponent, AboutComponent ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
-export class HomeComponent {
-  earphonesAnimationOptions: AnimationOptions = {
-    path: 'assets/animations/earphones.json'
-  };
+export class HomeComponent implements AfterViewInit{
+  // @ViewChild('categoryCard', { static: false, read: ElementRef }) categoryCards!: ElementRef;
 
-  // Animazione per le cuffie che girano (XX99)
-  xx99AnimationOptions: AnimationOptions = {
-    path: 'assets/animations/xx99.json',
-    loop: true
-  };
+  ngAfterViewInit(): void {
+    setTimeout(() => {
+      gsap.from('.category-card', {
+        y: 100,
+        opacity: 0,
+        duration: 1,
+        stagger: 0.2,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: '.category-container',
+          start: 'top 80%',
+          toggleActions: 'play none none reverse'
+        }
+      });
+    });
+  }
 
-  // Animazione per lo speaker che sale nella sezione evidenziata
-  speakerAnimationOptions: AnimationOptions = {
-    path: 'assets/animations/speaker-reveal.json',
-    loop: true
-  };
 
+  categories = [
+    {title: 'HEADPHONES', image:'headphones-image.png', },
+    {title: 'SPEAKERS', image:'3D_Speaker-image.png', },
+    {title: 'EARPHONES', image:'earphones-image.png', },
+  ]
 
 }

@@ -1,7 +1,6 @@
 <section class="hero-section d-flex align-items-center text-white">
   <div class="container">
     <div class="row align-items-center">
-      
       <!-- Left Column: Testo -->
       <div class="col-md-6 text-left">
         <p class="new-product">NEW PRODUCT</p>
@@ -11,7 +10,6 @@
         </p>
         <button class="btn btn-warning text-uppercase px-4 py-2">See Product</button>
       </div>
-
       <!-- Right Column: Immagine -->
         <div class="col-md-6 text-center">
             <div class="hero-image-wrapper">
@@ -25,7 +23,7 @@
 
 <!-- Categories Section -->
 <section class="categories-section text-center container my-5 category-container">
-     <div class="row justify-content-center">
+  <div class="row justify-content-center">
     <div class="col-md-4" *ngFor="let cat of categories">
       <div class="category-card" (click)="navigateToCategory(cat.title)" >
         <div class="category-image">
@@ -33,39 +31,15 @@
         </div>
         <div class="category-title">{{ cat.title }}</div>
         <div class="shop-link">
-          Shop
-          <span class="arrow">&rarr;</span>
+          Shop <span class="arrow">&rarr;</span>
         </div>
       </div>
     </div>
-
-        <!-- Speakers
-        <div class="category-item text-center">
-          <div class="category-image">
-            <img src="" alt="Headphones">
-          </div>
-          <h3 class="category-title">HEADPHONES</h3>
-          <p class="shop-link">
-            SHOP <span class="arrow">&rarr;</span>
-          </p>
-        </div>
-
-        Earphones 
-        <div class="category-item text-center">
-          <div class="category-image">
-            <img src="" alt="Headphones">
-          </div>
-          <h3 class="category-title">HEADPHONES</h3>
-          <p class="shop-link">
-            SHOP <span class="arrow">&rarr;</span>
-          </p>
-        </div> -->
-      </div>
-    <!-- </div> -->
+  </div>
 </section>
 
 <!-- Promotions Sections -->
- <app-promotions></app-promotions>
+  <app-promotions></app-promotions>
 
- <!-- About Section -->
+<!-- About Section -->
   <app-about></app-about>

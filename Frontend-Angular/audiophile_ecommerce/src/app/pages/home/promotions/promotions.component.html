@@ -1,32 +1,33 @@
 
 <section class="promotions-container-wrapper">
-    <div class="promotions-container">
-      <!-- ZX9 SPEAKER -->
-      <div class="zx9-speaker">
-          <img  [src]="zx9Product.imageUrl" [alt]="zx9Product.alt" class="zx9-image" />
-          <div class="zx9-content">
-          <h2>{{ zx9Product.title }}</h2>
-          <p>{{ zx9Product.description }}</p>
+    <div class="promotions-container" >
+
+      <!-- main & first product: ZX9 SPEAKER -->
+      <div class="main-product">
+          <img  [src]="promotionsProducts[0].imageUrl" [alt]="promotionsProducts[0].alt" class="main-product-img"/>
+          <div class="main-product-content">
+          <h2>{{ promotionsProducts[0].title }}</h2>
+          <p>{{ promotionsProducts[0].description }}</p>
           <button >SEE PRODUCT</button>
           </div>
       </div>
 
-      <!-- ZX7 SPEAKER -->
-      <div class="zx7-speaker">
-        <div class="zx7-content">
-          <h3>{{ zx7Product.title }}</h3>
+      <!-- second product:  -->
+      <div class="second-product">
+        <div class="second-product-content">
+          <h3>{{ promotionsProducts[1].title }}</h3>
           <button class="outline">SEE PRODUCT</button>
         </div>
-          <img [src]="zx7Product.imageUrl" [alt]="zx7Product.alt" class="zx7-image" />
+          <img [src]="promotionsProducts[1].imageUrl" [alt]="promotionsProducts[1].alt" class="second-product-img" />
       </div>
 
-      <!-- YX1 EARPHONES -->
-      <div class="yx1-wrapper">
-        <div class="yx1-img">
-          <img [src]="yx1Product.imageUrl"[alt]="yx1Product.alt"/>
+      <!-- third product: YX1 EARPHONES -->
+      <div class="third-product-wrapper">
+        <div class="third-product-img">
+          <img [src]="promotionsProducts[2].imageUrl"[alt]="promotionsProducts[2].alt"/>
         </div>
-        <div class="yx1-content">
-          <h3>{{ yx1Product.title }}</h3>
+        <div class="third-product-content">
+          <h3>{{ promotionsProducts[2].title }}</h3>
           <a class="outline">SEE PRODUCT</a>
         </div>
       </div>

@@ -20,7 +20,7 @@ export class CategoryComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
-      this.categoryName = params.get('categoryName') || '';
+      this.categoryName = params.get('categoryName')?.toLowerCase() ?? '';
       this.getProducts();
     });
   }

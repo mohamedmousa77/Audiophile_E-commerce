@@ -1,26 +1,43 @@
-<footer class="bg-black text-white py-5 mt-5">
+<footer class="footer">
   <div class="container">
-    <div class="d-flex flex-column flex-md-row justify-content-between">
-      <div class="mb-4 mb-md-0">
-        <div class="logo fw-bold fs-4 mb-3">audiophile</div>
-        <p class="footer-text" style="max-width: 400px;">
-          Audiophile is an all in one stop to fulfill your audio needs. We're a small team of music lovers and sound specialists who are devoted to helping you get the most out of personal audio. Come and visit our demo facility - we’re open 7 days a week.
+    <div class="footer-top">
+      <div class="footer-brand">
+        <h2 class="logo">audiophile</h2>
+        <p>
+          Audiophile is an all in one stop to fulfill your audio needs.
+          We're a small team of music lovers and sound specialists who
+          are devoted to helping you get the most out of personal audio.
         </p>
       </div>
-      <div>
-        <nav class="d-flex flex-column flex-md-row gap-3 mb-4">
-          <a routerLink="/" class="nav-link text-white text-decoration-none" (click)="navigateToHome()" >Home</a>
-          <a routerLink="/category/headphones" class="nav-link text-white text-decoration-none"  (click)="navigateToCategory('headphones')">Headphones</a>
-          <a routerLink="/category/speakers" class="nav-link text-white text-decoration-none"  (click)="navigateToCategory('speakers')">Speakers</a>
-          <a routerLink="/category/earphones" class="nav-link text-white text-decoration-none"  (click)="navigateToCategory('earphones')">Earphones</a>
-        </nav>
-        <div class="d-flex gap-3">
-          <a href="#" class="text-white"><i class="fab fa-facebook-f fa-lg"></i></a>
-          <a href="#" class="text-white"><i class="fab fa-twitter fa-lg"></i></a>
-          <a href="#" class="text-white"><i class="fab fa-instagram fa-lg"></i></a>
+
+      <div class="footer-links">
+        <h3>Quick Links</h3>
+        <ul>
+          <li><a routerLink="/">Home</a></li>
+          <li><a routerLink="/category/headphones">Headphones</a></li>
+          <li><a routerLink="/category/speakers">Speakers</a></li>
+          <li><a routerLink="/category/earphones">Earphones</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-contact">
+        <h3>Contact</h3>
+        <p>Puglia, Italy</p>
+        <p>mohamed.mousa.contactgmail.com<br>+39 333-686-3167</p>
+      </div>
+
+      <div class="footer-social">
+        <h3>Follow Us</h3>
+        <div class="social-icons">
+          <a href="https://github.com/mohamedmousa77" target="_blank"><i class="fab fa-github"></i></a>
+          <a href="https://linkedin.com/in/mohamedmousa-" target="_blank"><i class="fab fa-linkedin-in"></i></a>
+          <a href="http://mohamedmousa.it/" target="_blank"><i class="fas fa-user"></i></a>
         </div>
       </div>
     </div>
-    <div class="footer-text">Copyright 2025. All Rights Reserved</div>
+
+    <div class="footer-bottom">
+      <p>Copyright © 2025 Audiophile. All Rights Reserved</p>
+    </div>
   </div>
 </footer>

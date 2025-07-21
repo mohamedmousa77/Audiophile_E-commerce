@@ -3,3 +3,14 @@
   font-size: 14px;
   line-height: 1.6;
 }
+.nav-link {
+  color: white;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.nav-link:hover,
+.nav-link.active {
+  color: #d87d4a;
+  cursor: pointer;
+}

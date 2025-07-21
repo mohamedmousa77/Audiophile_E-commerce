@@ -6,10 +6,36 @@
     </a>
 
     <nav class="d-flex gap-4 text-uppercase">
-      <a routerLink="/" routerLinkActive="active" class="nav-link"  (click)="navigateToHome()">Home</a>
-      <a routerLink="/category/headphones" routerLinkActive="active" class="nav-link"  (click)="navigateToCategory('headphones')">Headphones</a>
-      <a routerLink="/category/speakers" routerLinkActive="active" class="nav-link"  (click)="navigateToCategory('speakers')">Speakers</a>
-      <a routerLink="/category/earphones" routerLinkActive="active" class="nav-link"  (click)="navigateToCategory('earphones')">Earphones</a>
+      <a 
+        routerLink="/" 
+        routerLinkActive="active" 
+        class="nav-link" 
+        [ngClass]="{ 'active-link': isActiveCategory('home') }" 
+        (click)="navigateToHome()"
+      >Home</a>
+      <a 
+        routerLink="/category/headphones" 
+        routerLinkActive="active" 
+        class="nav-link" 
+        [class.active]="isActiveCategory('headphones')"
+        [ngClass]="{ 'active-link': isActiveCategory('headphones') }" 
+        (click)="navigateToCategory('headphones')"
+      >Headphones</a>
+      <a 
+        routerLink="/category/speakers" 
+        routerLinkActive="active" 
+        class="nav-link" 
+        [class.active]="isActiveCategory('speakers')"
+        [ngClass]="{ 'active-link': isActiveCategory('speakers') }" 
+        (click)="navigateToCategory('speakers')"
+      >Speakers</a>
+      <a 
+        routerLink="/category/earphones"  
+        routerLinkActive="active" class="nav-link" 
+        [ngClass]="{ 'active-link': isActiveCategory('earphones') }" 
+        (click)="navigateToCategory('earphones')"
+        [class.active]="isActiveCategory('earphones')"
+      >Earphones</a>
     </nav>
 
     <a routerLink="/cart" class="text-white">

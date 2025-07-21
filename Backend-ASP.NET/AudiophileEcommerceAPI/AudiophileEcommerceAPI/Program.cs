@@ -1,4 +1,4 @@
-using AudiophileEcommerceAPI.Data;
+﻿using AudiophileEcommerceAPI.Data;
 using AudiophileEcommerceAPI.Services;
 using Microsoft.EntityFrameworkCore;
 
@@ -20,8 +20,21 @@ builder.Services.AddScoped<ICartService, CartService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<ISeedDataService, SeedDataService>();
 
+//  🔥 CORS POLICY
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend", policy =>
+    {
+        policy.WithOrigins("http://localhost:64104") // Angular dev server
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
 
 var app = builder.Build();
+
+app.UseCors("AllowFrontend");
 
 // SEED iniziale
 using (var scope = app.Services.CreateScope())
@@ -40,6 +53,8 @@ if (app.Environment.IsDevelopment())
         config.RoutePrefix = string.Empty;
     });
 }
+
+
 
 app.UseHttpsRedirection();
 

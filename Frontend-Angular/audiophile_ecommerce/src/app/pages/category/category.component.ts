@@ -27,7 +27,14 @@ export class CategoryComponent implements OnInit {
 
   getProducts(): void {
     this.productService.getProductsByCategory(this.categoryName)
-      .subscribe(products => this.products = products);
+      .subscribe(products => {
+        this.products = products;
+        this.products.forEach(element => {
+          if(!element.imageUrl){
+            element.imageUrl = 'place-holder-3.png';
+          }           
+        });
+      });      
   }
 
 }

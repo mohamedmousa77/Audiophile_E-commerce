@@ -1,20 +1,13 @@
-<section class="category-header text-center py-5">
+<!-- <section class="category-header text-center py-5">
   <h2 class="text-uppercase">{{ categoryName || 'Category name' }}</h2>
-</section>
-<!--
-<section class="container py-4">
-  <div class="row gy-4">
-    <div class="col-md-6" *ngFor="let product of products">
-      <div class="card p-4 shadow border-0 d-flex flex-md-row align-items-center">
-        <img [src]="product.imageUrl" [alt]="product.name" class="img-fluid me-md-4" style="max-width: 200px;" />
-        <div>
-          <p class="text-uppercase text-warning fw-bold" *ngIf="product.isNew">New Product</p> 
-          <h3 class="fw-bold">{{ product.name }}</h3>
-          <p>{{ product.description }}</p>
-          <a  class="btn btn-dark mt-3">SEE PRODUCT</a>
-        </div>
-      </div>
+</section> -->
+<section class="product-grid">
+  <div *ngFor="let product of products" class="product-card">
+    <img [src]="product.imageUrl" [alt]="product.name" class="product-image" />
+    <div class="product-info">
+      <h2>{{ product.name }}</h2>
+      <p>{{ product.description }}</p>
+      <a class="outline">SEE PRODUCT</a>
     </div>
   </div>
 </section>
--->

@@ -10,7 +10,7 @@ export class ProductService {
   private apiUrl = '';
 
   constructor(private http: HttpClient, private apiServices: ApiService) { 
-    this.apiUrl = this.apiServices.getBaseUrl + '/products';
+    this.apiUrl = this.apiServices.getBaseUrl() + '/products';
   }
 
   getAll(): Observable<Product[]> {
@@ -38,5 +38,4 @@ export class ProductService {
   deleteProduct (id: number): Observable<boolean>{
     return this.http.delete<boolean>(`${this.apiUrl}/${id}`)
   }
-
 }

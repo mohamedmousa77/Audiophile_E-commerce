@@ -30,10 +30,25 @@
   transition: color 0.3s;
 }
 
+nav a {
+  text-decoration: none;
+  color: white;
+  margin: 0 15px;
+  padding-bottom: 5px;
+  transition: border-bottom 0.3s, color 0.3s;
+}
+
 .nav-link:hover,
 .nav-link.active {
   color: #d87d4a;
   cursor: pointer;
+  border-bottom: 3px solid #D87D4A;
+}
+
+a.active {
+  border-bottom: 2px solid #d87d4a;
+  color: #d87d4a !important;
+  font-weight: bold;
 }
 
 .fixed-top {

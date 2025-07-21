@@ -9,10 +9,10 @@
       </div>
       <div>
         <nav class="d-flex flex-column flex-md-row gap-3 mb-4">
-          <a routerLink="/" class="text-white text-decoration-none">Home</a>
-          <a routerLink="/category/headphones" class="text-white text-decoration-none">Headphones</a>
-          <a routerLink="/category/speakers" class="text-white text-decoration-none">Speakers</a>
-          <a routerLink="/category/earphones" class="text-white text-decoration-none">Earphones</a>
+          <a routerLink="/" class="nav-link text-white text-decoration-none" (click)="navigateToHome()" >Home</a>
+          <a routerLink="/category/headphones" class="nav-link text-white text-decoration-none"  (click)="navigateToCategory('headphones')">Headphones</a>
+          <a routerLink="/category/speakers" class="nav-link text-white text-decoration-none"  (click)="navigateToCategory('speakers')">Speakers</a>
+          <a routerLink="/category/earphones" class="nav-link text-white text-decoration-none"  (click)="navigateToCategory('earphones')">Earphones</a>
         </nav>
         <div class="d-flex gap-3">
           <a href="#" class="text-white"><i class="fab fa-facebook-f fa-lg"></i></a>

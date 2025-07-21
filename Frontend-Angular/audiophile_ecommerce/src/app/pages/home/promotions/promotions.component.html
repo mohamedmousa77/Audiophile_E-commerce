@@ -8,7 +8,7 @@
           <div class="main-product-content">
           <h2>{{ promotionsProducts[0].title }}</h2>
           <p>{{ promotionsProducts[0].description }}</p>
-          <button >SEE PRODUCT</button>
+          <button (click)="viewProduct(promotionsProducts[0].id)">SEE PRODUCT</button>
           </div>
       </div>
 
@@ -16,7 +16,7 @@
       <div class="second-product">
         <div class="second-product-content">
           <h3>{{ promotionsProducts[1].title }}</h3>
-          <button class="outline">SEE PRODUCT</button>
+          <button class="outline" (click)="viewProduct(promotionsProducts[1].id)">SEE PRODUCT</button>
         </div>
           <img [src]="promotionsProducts[1].imageUrl" [alt]="promotionsProducts[1].alt" class="second-product-img" />
       </div>
@@ -28,7 +28,7 @@
         </div>
         <div class="third-product-content">
           <h3>{{ promotionsProducts[2].title }}</h3>
-          <a class="outline">SEE PRODUCT</a>
+          <a class="outline" (click)="viewProduct(promotionsProducts[2].id)">SEE PRODUCT</a>
         </div>
       </div>
   </div>

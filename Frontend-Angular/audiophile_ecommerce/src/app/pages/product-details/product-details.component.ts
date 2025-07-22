@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Product } from '../../models/product';
 
 @Component({
   selector: 'app-product-details',
@@ -10,11 +11,19 @@ import { ActivatedRoute } from '@angular/router';
 export class ProductDetailsComponent {
 
   productId: number = 0;
+  product: any;
 
-  constructor(private route: ActivatedRoute) {  }
+  constructor(private route: ActivatedRoute, private router: Router) {  }
 
   ngOnInit() {
-    this.productId = +this.route.snapshot.paramMap.get('id')!;
+    const navigation = this.router.getCurrentNavigation();
+    this.product = navigation?.extras?.state?.['product'];
+
+    if (!this.product) {
+      // fallback: load by ID
+      const id = this.route.snapshot.paramMap.get('id');
+      // chiamata API per prendere i dati con quell'id
+    }
   }
 
 }

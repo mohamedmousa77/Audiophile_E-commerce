@@ -39,7 +39,9 @@ export class PromotionsComponent {
   constructor(private router: Router) {  }
   
   viewProduct(productId: number) {
-  this.router.navigate(['/product', productId]);
+    this.router.navigate(['/product', productId], {
+    state: { product: this.promotionsProducts[productId]  }
+  });
   }
 
 }

@@ -24,12 +24,8 @@ export class PromotionsComponent {
   }
   
   viewProduct(product: Product) {
-    // const product = this.promotionsProducts?.find(p => p.id === productId);
-    console.log(`Product sent from promo products:  ${product}`);
-    
-    this.router.navigate(['/product', product.id], {
-      state: { product: product }
-    });
+    sessionStorage.setItem('selectedProduct', JSON.stringify(product));    
+    this.router.navigate(['/product', product.id]);
   }
 
 }

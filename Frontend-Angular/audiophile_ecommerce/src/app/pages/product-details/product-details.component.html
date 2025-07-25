@@ -5,10 +5,10 @@
         </figure>
     </div>
     <div class="product-details" *ngIf="product != null">
-        <p class="company-name">COMPANY NAME</p>
+        <p class="company-name">{{companyName.toUpperCase()}}</p>
         <h1 class="product-title"> {{product.name}} </h1>
-        <p class="product-desc">Those low-profile sneakers are your perfect casual wear companion. Featuring a durable rubber</p>
-        <h1 class="product-price">250$</h1>
+        <p class="product-desc">{{product.description}}</p>
+        <h1 class="product-price">{{product.price}} $</h1>
         <div class="add-cart-row">
             <div class="items-count"> 
                 <img src="icon-plus.png" class="increment-icon">

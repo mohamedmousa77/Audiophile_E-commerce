@@ -13,22 +13,38 @@ export class ProductDetailsComponent {
 
   productId: number = 0;
   product: any;
+  companyName = 'Audiophile';
 
-  constructor(private route: ActivatedRoute, private router: Router, private productS: ProductService) {  }
+  constructor(
+    private route: ActivatedRoute, 
+    private router: Router, 
+    private productS: ProductService
+  ) { }
 
   ngOnInit() {
+    window.scrollTo(0, 0); 
     const navigation = this.router.getCurrentNavigation();
     this.product = navigation?.extras?.state?.['product'];
+    
     console.log("Product received via router state:", this.product);
     console.log("Product received via router state:", navigation?.extras?.state?.['product']);
-    if (!this.product) {
-      // fallback
-      this.productId = parseInt(this.route.snapshot.paramMap.get('id')!);
-      this.product = this.productS.getProductById(this.productId);
-      console.warn("Product not found in navigation state. ID from URL:", this.productId);
+    
+    const storedProduct = sessionStorage.getItem('selectedProduct');
+    if (storedProduct) {
+      this.product = JSON.parse(storedProduct);
     } else {
-      console.log("Product received via router state:", this.product);
+      // fallback API call
     }
+  console.log("Loaded product:", this.product);
+    
+    // if (!this.product) {
+    //   // fallback
+    //   this.productId = parseInt(this.route.snapshot.paramMap.get('id')!);
+    //   this.product = this.productS.getProductById(this.productId);
+    //   console.warn("Product not found in navigation state. ID from URL:", this.productId);
+    // } else {
+    //   console.log("Product received via router state:", this.product);
+    // }
   }
 
 }

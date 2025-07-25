@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { ProductService } from '../../../services/product/product.service';
+import { Product } from '../../../models/product';
 
 @Component({
   selector: 'app-promotions',
@@ -10,38 +12,24 @@ import { Router } from '@angular/router';
 })
 export class PromotionsComponent {
 
-  promotionsProducts = [
-    {
-      id: 0,
-      title: 'ZX9 SPEAKER',
-      description: 'Upgrade to premium speakers that are phenomenally built to deliver truly remarkable sound.',
-      imageUrl: '3D_Speaker-image.png',
-      alt: 'ZX9 Speaker',
-      link: '/product/zx9'
-    },
-    {
-      id: 1,
-      title: 'ZX7 SPEAKER',
-      imageUrl: 'speacker-img.png',
-      link: '/product/zx7-speaker',
-      alt: 'ZX9 Speaker',
-    },
-    {
-      id:2,
-      title: 'YX1 EARPHONES',
-      imageUrl: 'earphone-cat-img-bg.png',
-      link: '/product/yx1-earphones',
-      alt: 'ZX9 Speaker',
-    }
-  ];
+  promotionsProducts?: Product[];
 
+  constructor(private router: Router, private productService: ProductService) {  }
 
-  constructor(private router: Router) {  }
+  ngOnInit() {
+    this.productService.getFilteredProducts(true, false)
+    .subscribe(products => {
+      this.promotionsProducts = products;
+    });
+  }
   
-  viewProduct(productId: number) {
-    this.router.navigate(['/product', productId], {
-    state: { product: this.promotionsProducts[productId]  }
-  });
+  viewProduct(product: Product) {
+    // const product = this.promotionsProducts?.find(p => p.id === productId);
+    console.log(`Product sent from promo products:  ${product}`);
+    
+    this.router.navigate(['/product', product.id], {
+      state: { product: product }
+    });
   }
 
 }

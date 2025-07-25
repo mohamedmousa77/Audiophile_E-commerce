@@ -14,6 +14,8 @@ namespace AudiophileEcommerceAPI.DTOs
         [Required(ErrorMessage = "The product category of the customer is necessary")]
         public string Category { get; set; } = string.Empty;
         public DateTime UpdatedAt { get; set; }
+        public bool? IsPromotion { get; set; }
+        public bool? IsNew { get; set; }
 
     }
 }

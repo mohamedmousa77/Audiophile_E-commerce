@@ -58,5 +58,19 @@ namespace AudiophileEcommerceAPI.Controllers
             return NoContent();
         }
 
+        [HttpGet("filter")]
+        public async Task<ActionResult<IEnumerable<Product>>> GetFilteredProducts (bool? isPromotion = null, bool? isNew = null)
+        {
+            var products = await _productService.GetAllProducts();
+
+            if (isPromotion.HasValue)
+                products = products.Where(p => p.IsPromotion == isPromotion.Value).ToList();
+
+            if (isNew.HasValue)
+                products = products.Where(p => p.IsNew == isNew.Value).ToList();
+
+            return Ok(products);
+        }
+
     }
 }

@@ -3,32 +3,32 @@
     <div class="promotions-container" >
 
       <!-- main & first product: ZX9 SPEAKER -->
-      <div class="main-product">
-          <img  [src]="promotionsProducts[0].imageUrl" [alt]="promotionsProducts[0].alt" class="main-product-img"/>
+      <div class="main-product" *ngIf="promotionsProducts != null" >
+          <img  src="3D_Speaker-image.png"  class="main-product-img"/>
           <div class="main-product-content">
-          <h2>{{ promotionsProducts[0].title }}</h2>
-          <p>{{ promotionsProducts[0].description }}</p>
-          <button (click)="viewProduct(promotionsProducts[0].id)">SEE PRODUCT</button>
+          <h2>{{ promotionsProducts![0].name || 'Product Name'}}</h2>
+          <p>{{ promotionsProducts![0].description }}</p>
+          <button (click)="viewProduct(promotionsProducts![0])">SEE PRODUCT</button>
           </div>
       </div>
 
       <!-- second product:  -->
-      <div class="second-product">
+      <div class="second-product" *ngIf="promotionsProducts != null">
         <div class="second-product-content">
-          <h3>{{ promotionsProducts[1].title }}</h3>
-          <button class="outline" (click)="viewProduct(promotionsProducts[1].id)">SEE PRODUCT</button>
+          <h3>{{ promotionsProducts![1].name }}</h3>
+          <button class="outline" (click)="viewProduct(promotionsProducts![1])">SEE PRODUCT</button>
         </div>
-          <img [src]="promotionsProducts[1].imageUrl" [alt]="promotionsProducts[1].alt" class="second-product-img" />
+          <img src="speacker-img.png" class="second-product-img" />
       </div>
 
       <!-- third product: YX1 EARPHONES -->
-      <div class="third-product-wrapper">
+      <div class="third-product-wrapper" *ngIf="promotionsProducts != null">
         <div class="third-product-img">
-          <img [src]="promotionsProducts[2].imageUrl"[alt]="promotionsProducts[2].alt"/>
+          <img src="earphone-cat-img-bg.png"/>
         </div>
         <div class="third-product-content">
-          <h3>{{ promotionsProducts[2].title }}</h3>
-          <a class="outline" (click)="viewProduct(promotionsProducts[2].id)">SEE PRODUCT</a>
+          <h3>{{ promotionsProducts![2].name }}</h3>
+          <button class="outline" (click)="viewProduct(promotionsProducts![2])">SEE PRODUCT</button>
         </div>
       </div>
   </div>

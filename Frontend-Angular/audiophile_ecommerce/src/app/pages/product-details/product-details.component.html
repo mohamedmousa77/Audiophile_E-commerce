@@ -1,28 +1,12 @@
 <div class="product-container">
     <div class="product-gallery">
         <figure class="main-image">
-            <img src="3D_Speaker-image.png" alt="" id="mainProductImg" class="cover-image">
+            <img src="3D_Speaker-image.png" id="mainProductImg" class="cover-image">
         </figure>
-        <!-- <div class="thumbnail-row">
-            <img src="images/image-product-1-thumbnail.jpg" alt="" class="product-thumbnail active">
-            <img src="images/image-product-2-thumbnail.jpg" alt="" class="product-thumbnail ">
-            <img src="images/image-product-3-thumbnail.jpg" alt="" class="product-thumbnail ">
-            <img src="images/image-product-4-thumbnail.jpg" alt="" class="product-thumbnail ">
-        </div> -->
-        <div id="lightbox" class="lightbox">
-            <span class="close" onclick="closeLightbox()"><img src="icon-cancel.svg" alt=""></span>
-            <img id="lightbox-img" class="lightbox-img">
-            <button id="prev" class="prev" onclick="prevSlide()">
-                <img src="icon-previous.png" alt="">
-            </button>
-            <button id="next" class="next">
-                <img src="icon-next.svg" alt="">
-            </button>
-        </div>
     </div>
-    <div class="product-details">
-        <p class="company-name">SNEAKER COMPANY</p>
-        <h1 class="product-title">Fall Limited Edition Sneakers </h1>
+    <div class="product-details" *ngIf="product != null">
+        <p class="company-name">COMPANY NAME</p>
+        <h1 class="product-title"> {{product.name}} </h1>
         <p class="product-desc">Those low-profile sneakers are your perfect casual wear companion. Featuring a durable rubber</p>
         <h1 class="product-price">250$</h1>
         <div class="add-cart-row">

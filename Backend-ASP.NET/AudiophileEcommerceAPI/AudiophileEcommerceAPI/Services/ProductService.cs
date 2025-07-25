@@ -25,7 +25,6 @@ namespace AudiophileEcommerceAPI.Services
                 ImageUrl = product.ImageUrl,
                 Category = product.Category,
             }; 
-
         }
 
         public async Task<bool> DeleteProduct(int id)
@@ -71,6 +70,5 @@ namespace AudiophileEcommerceAPI.Services
                 .Where(p => p.Category.ToLower() == category.ToLower())
                 .ToListAsync();
         }
-
     }
 }

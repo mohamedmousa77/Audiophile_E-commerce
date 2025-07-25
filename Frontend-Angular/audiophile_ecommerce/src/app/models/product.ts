@@ -7,5 +7,7 @@ export interface Product {
     category: string;
     stockQuantity: number;
     updatedAt: Date;
+    isPromotion: boolean;
+    isNew: boolean;
 
 }

@@ -36,7 +36,6 @@ export class HeaderComponent {
 
   isActiveCategory(category: string): boolean {
     const currentUrl = this.router.url;
-    console.log(`category: ${category}. Current url: ${currentUrl}`)
     if (category === 'home') {
       return currentUrl === '/' || currentUrl === '/home';
     }

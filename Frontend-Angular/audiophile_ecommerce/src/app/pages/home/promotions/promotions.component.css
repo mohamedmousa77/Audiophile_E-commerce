@@ -141,7 +141,7 @@
   margin-left: 2rem;
 }
 
-a.outline {
+.outline {
   margin-left: 4rem;
   padding: 0.8rem 1.5rem;
   border: 1px solid #d87d4a;
@@ -155,7 +155,7 @@ a.outline {
   text-align: center;
 }
 
-a.outline:hover {
+.outline:hover {
   border: 1px solid white;
   background-color: #d87d4a;
   color: white;

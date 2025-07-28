@@ -1,19 +1,50 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Product } from '../../models/product';
 import { ProductService } from '../../services/product/product.service';
 import { CommonModule } from '@angular/common';
+
 @Component({
   selector: 'app-product-details',
   imports: [CommonModule],
   templateUrl: './product-details.component.html',
   styleUrl: './product-details.component.css'
 })
+
 export class ProductDetailsComponent {
 
   productId: number = 0;
   product: any;
   companyName = 'Audiophile';
+  productQuantity = 1;
+
+  suggestedProducts = [
+  {
+    name: 'ZX7 Speaker',
+    imageUrl: '3D_Speaker-image.png',
+    shortDescription: 'Compact wireless speaker with premium sound.',
+  },
+  {
+    name: 'YX1 Earphones',
+    imageUrl: '3D_Speaker-image.png',
+    shortDescription: 'High-performance earphones for daily use.',
+  },
+  {
+    name: 'XX99 Headphones',
+    imageUrl: '3D_Speaker-image.png',
+    shortDescription: 'Studio quality headphones with noise cancelling.',
+  },
+  {
+    name: 'YX1 Earphones',
+    imageUrl: '3D_Speaker-image.png',
+    shortDescription: 'High-performance earphones for daily use.',
+  },
+  {
+    name: 'XX99 Headphones',
+    imageUrl: '3D_Speaker-image.png',
+    shortDescription: 'Studio quality headphones with noise cancelling.',
+  }
+];
+
 
   constructor(
     private route: ActivatedRoute, 
@@ -22,7 +53,7 @@ export class ProductDetailsComponent {
   ) { }
 
   ngOnInit() {
-    window.scrollTo(0, 0); 
+    window.scrollTo({ top: 0, behavior: 'smooth' });
     const navigation = this.router.getCurrentNavigation();
     this.product = navigation?.extras?.state?.['product'];
     

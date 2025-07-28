@@ -1,24 +1,48 @@
-<div class="product-container">
-    <div class="product-gallery">
-        <figure class="main-image">
-            <img src="3D_Speaker-image.png" id="mainProductImg" class="cover-image">
-        </figure>
-    </div>
-    <div class="product-details" *ngIf="product != null">
-        <p class="company-name">{{companyName.toUpperCase()}}</p>
-        <h1 class="product-title"> {{product.name}} </h1>
-        <p class="product-desc">{{product.description}}</p>
-        <h1 class="product-price">{{product.price}} $</h1>
-        <div class="add-cart-row">
-            <div class="items-count"> 
-                <img src="icon-plus.png" class="increment-icon">
-                <h1 id="itemCount"> 0 </h1>
-                <img src="icon-minus.png" class="decrement-icon">
+<div class="container-fluid py-5 mt-6 product-wrapper">
+
+    <div class="row align-items-center g-5 rounded shadow ">
+        <!-- Product Image Gallery -->
+        <div class="col-lg-6 text-center">
+            <img src="3D_Speaker-image.png" 
+            alt="Product Image" class="img-fluid" style="max-height: 500px;">
+        </div>
+        <!-- Product Details -->
+        <div class="col-lg-6">
+            <div *ngIf="product">
+                <p class="company-name">{{companyName.toUpperCase()}}</p>
+                <h1 class="product-title"> {{product.name}} </h1>
+                <p class="product-desc">{{product.description}}</p>
+                <h1 class="product-price">{{product.price}} $</h1>
+                <div class="add-cart-row">
+                    <div class="items-count"> 
+                        <img src="icon-plus.png" class="increment-icon">
+                        <h1 id="itemCount"> {{productQuantity}} </h1>
+                        <img src="icon-minus.png" class="decrement-icon">
+                    </div>
+                    <button class="cart-btn-wrapper" id="addToCart">
+                        <img src="icon-cart.png" class="add-cart-icon">
+                        Add To Cart
+                    </button>
+                </div>
             </div>
-            <button class="add-cart-btn" id="addToCart">
-                <img src="icon-cart.png" class="add-cart-icon">
-                <p class="add-cart-txt">Add to cart</p>
-            </button>
         </div>
     </div>
+
+  <!--TODO:  Recommended Products Section -->
+  <div class="mt-5">
+    <h3 class="fw-bold mb-4">Products You May Like</h3>
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+      <div class="col" *ngFor="let suggestion of suggestedProducts">
+        <div class="card h-100 shadow-sm">
+          <img [src]="suggestion.imageUrl" class="card-img-top" alt="...">
+          <div class="card-body">
+            <h5 class="card-title">{{ suggestion.name }}</h5>
+            <p class="card-text">{{ suggestion.shortDescription }}</p>
+            <button class="btn btn-outline-primary w-100">View Details</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </div>

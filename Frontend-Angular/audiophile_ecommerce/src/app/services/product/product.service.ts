@@ -46,9 +46,9 @@ export class ProductService {
     console.log('filterd products called: isPromotion product = '+isPromotion+`is new = ${isNew}`);
     let params = new HttpParams();
 
-      if (isNew) {
-        params = params.set('isNew', isNew);
-        return this.http.get<Product[]>(`${this.apiUrl}/filter`, { params })
+    if (isNew) {
+      params = params.set('isNew', isNew);
+      return this.http.get<Product[]>(`${this.apiUrl}/filter`, { params })
     }
 
     if (isPromotion) {

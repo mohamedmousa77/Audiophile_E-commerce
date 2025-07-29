@@ -15,9 +15,9 @@
                 <h1 class="product-price">{{product.price}} $</h1>
                 <div class="add-cart-row">
                     <div class="items-count"> 
-                        <img src="icon-plus.png" class="increment-icon">
+                        <img src="icon-plus.png" class="increment-icon" (click)="incrementQuantity()">
                         <h1 id="itemCount"> {{productQuantity}} </h1>
-                        <img src="icon-minus.png" class="decrement-icon">
+                        <img src="icon-minus.png" class="decrement-icon" (click)="discrementQuantity()">
                     </div>
                     <button class="cart-btn-wrapper" id="addToCart">
                         <img src="icon-cart.png" class="add-cart-icon">
@@ -29,17 +29,15 @@
     </div>
 
   <!--TODO:  Recommended Products Section -->
-  <div class="mt-5">
-    <h3 class="fw-bold mb-4">Products You May Like</h3>
-    <div class="row row-cols-1 row-cols-md-3 g-4">
-      <div class="col" *ngFor="let suggestion of suggestedProducts">
-        <div class="card h-100 shadow-sm">
-          <img [src]="suggestion.imageUrl" class="card-img-top" alt="...">
-          <div class="card-body">
-            <h5 class="card-title">{{ suggestion.name }}</h5>
-            <p class="card-text">{{ suggestion.shortDescription }}</p>
-            <button class="btn btn-outline-primary w-100">View Details</button>
-          </div>
+  <div class="container-fluid mt-5">
+    <h3 class="mb-3">Products You May Like</h3>
+    <div class="suggested-products-scroll d-flex overflow-auto">
+      <div *ngFor="let item of productsSuggested" class="suggested-card card me-3 flex-shrink-0">
+        <img [src]="item.imageUrl" class="card-img-top suggested-img" alt="{{ item.name }}">
+        <div class="card-body p-2 customized-card">
+          <h6 class="card-title mb-1">{{ item.name }}</h6>
+          <p class="card-text small text-muted">{{ item.description }}</p>
+          <button class="outline" (click)="viewProduct(item)">SEE PRODUCT</button>
         </div>
       </div>
     </div>

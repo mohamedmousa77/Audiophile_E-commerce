@@ -89,3 +89,59 @@
     
 }
 
+/* Suggested products */
+.suggested-products-scroll {
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; 
+    -ms-overflow-style: none;
+    height: 350px;
+}
+
+.suggested-card {
+    margin-top: 1rem;
+    width: 300px;
+    min-width: 200px;
+    height: 300px;
+    scroll-snap-align: start;
+    border-radius: 10px;
+    border: 1px solid #eee;
+    box-shadow: 0px 4px 10px rgba(0,0,0,0.05);
+    transition: transform 0.2s ease;
+}
+
+.suggested-card:hover {
+    transform: scale(1.03);
+}
+
+.suggested-img {
+    height: 140px;
+    object-fit: contain;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+.customized-card {
+    justify-items: center;
+}
+
+.outline {
+    margin-left: 2rem;
+    padding: 0.8rem 1.5rem;
+    border: 1px solid #d87d4a;
+    text-decoration: none;
+    color: black;
+    font-weight: bold;
+    display: inline-block;
+    transition: all 0.2s;
+    width: 100%;
+    max-width: 200px;
+    text-align: center;
+}
+
+.outline:hover {
+    border: 1px solid white;
+    background-color: #d87d4a;
+    color: white;
+    cursor: pointer;
+}

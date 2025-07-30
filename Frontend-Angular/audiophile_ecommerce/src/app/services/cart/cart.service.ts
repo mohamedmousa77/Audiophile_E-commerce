@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { Cart } from '../../models/cart';
 import { CartItemDTO } from '../../models/cartItemDTO';
 import { ApiService } from '../api/api.service';
@@ -10,8 +10,14 @@ import { ApiService } from '../api/api.service';
 })
 export class CartService {
   private apiUrl = '';
+  private cartItems: any[] = [];
+  private cartSubject = new BehaviorSubject<any[]>([]);
 
-  constructor(private http: HttpClient, private api: ApiService) { 
+  cart$ = this.cartSubject.asObservable();
+
+  constructor(
+    private http: HttpClient, 
+    private api: ApiService ) { 
     this.apiUrl = this.api.getBaseUrl + '/cart';
   }
 

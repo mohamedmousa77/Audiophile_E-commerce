@@ -1,10 +1,15 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, Renderer2, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProductService } from '../../services/product/product.service';
 import { CommonModule } from '@angular/common';
 import { Product } from '../../models/product';
 import { CartService } from '../../services/cart/cart.service';
 import { CartItemDTO } from '../../models/cartItemDTO';
+import { AuthService } from '../../services/auth/auth.service';
+
+// import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+
+
 
 @Component({
   selector: 'app-product-details',
@@ -14,45 +19,22 @@ import { CartItemDTO } from '../../models/cartItemDTO';
 })
 
 export class ProductDetailsComponent {
+  @ViewChild('productImage') productImage!: ElementRef;
+  @ViewChild('authModal') authModalRef: any;
+  @ViewChild('cartIcon', { read: ElementRef }) cartIcon!: ElementRef; // pass this via service or shared logic
 
   productId: number = 0;
   product: any;
   companyName = 'Audiophile';
   productQuantity = 1;
-
-//   suggestedProducts = [
-//   {
-//     name: 'ZX7 Speaker',
-//     imageUrl: '3D_Speaker-image.png',
-//     shortDescription: 'Compact wireless speaker with premium sound.',
-//   },
-//   {
-//     name: 'YX1 Earphones',
-//     imageUrl: '3D_Speaker-image.png',
-//     shortDescription: 'High-performance earphones for daily use.',
-//   },
-//   {
-//     name: 'XX99 Headphones',
-//     imageUrl: '3D_Speaker-image.png',
-//     shortDescription: 'Studio quality headphones with noise cancelling.',
-//   },
-//   {
-//     name: 'YX1 Earphones',
-//     imageUrl: '3D_Speaker-image.png',
-//     shortDescription: 'High-performance earphones for daily use.',
-//   },
-//   {
-//     name: 'XX99 Headphones',
-//     imageUrl: '3D_Speaker-image.png',
-//     shortDescription: 'Studio quality headphones with noise cancelling.',
-//   }
-// ];
   productsSuggested: Product[] = [];
 
   constructor(
     private router: Router,
     private productService: ProductService,
-    private cartService: CartService
+    private cartService: CartService,
+    private authService: AuthService,
+    private renderer: Renderer2,
   ) { }
 
   ngOnInit() {
@@ -74,20 +56,28 @@ export class ProductDetailsComponent {
   }
 
   addToCart() {
-    const customerId = 1;
-    // this.authService.getUserId(); // oppure leggi da localStorage
-    const productId = this.product.id;
-    const quantity = 1; // oppure leggi da input quantità
+    if(!this.authService.getToken()){
+      const modalEl = document.getElementById('authModal');
+      if (modalEl) {
+        (modalEl as any).style.display = 'block';
+        (modalEl as any).classList.add('show');
+      }
+      return;
+    }
+    const customerId = this.authService.getUserIdFromToken();
+    if(!customerId) return;
 
     const item: CartItemDTO = {
-      productId: productId,
-      quantity: quantity
+      productId: this.product.id,
+      quantity: this.productQuantity
     };
 
     this.cartService.addToCart(customerId, item).subscribe({
       next: () => {
         this.animateToCart(); // funzione opzionale
         // this.updateCartCount(); //TODO: funzione da implementare per aggiornare il numero accanto
+        this.cartService.getCart(customerId); // to refresh the cart
+        this.cartService.setCartItemCount(this.productQuantity);
       },
       error: err => {
         console.error("Errore aggiunta al carrello", err);
@@ -96,34 +86,33 @@ export class ProductDetailsComponent {
   }
 
   animateToCart() {
-    const img = document.getElementById('mainProductImg');
-    const cartIcon = document.querySelector('.cart-icon img');//TODO: check this cart-icon
+  const productImg = document.getElementById('mainProductImg');
+  const cartIcon = document.getElementById('cartIcon');
 
-    if (!img || !cartIcon) return;
+  if (!productImg || !cartIcon) return;
 
-    const imgRect = img.getBoundingClientRect();
-    const cartRect = cartIcon.getBoundingClientRect();
+  const clone = productImg.cloneNode(true) as HTMLElement;
+  const imgRect = productImg.getBoundingClientRect();
+  const cartRect = cartIcon.getBoundingClientRect();
 
-    const clone = img.cloneNode(true) as HTMLElement;
-    clone.style.position = 'fixed';
-    clone.style.left = `${imgRect.left}px`;
-    clone.style.top = `${imgRect.top}px`;
-    clone.style.width = `${imgRect.width}px`;
-    clone.style.transition = 'all 0.8s ease-in-out';
-    clone.style.zIndex = '9999';
+  clone.style.position = 'fixed';
+  clone.style.left = `${imgRect.left}px`;
+  clone.style.top = `${imgRect.top}px`;
+  clone.style.width = `${imgRect.width}px`;
+  clone.style.zIndex = '1000';
+  clone.style.transition = 'all 0.9s ease-in-out';
 
-    document.body.appendChild(clone);
+  document.body.appendChild(clone);
 
-    setTimeout(() => {
-      clone.style.left = `${cartRect.left}px`;
-      clone.style.top = `${cartRect.top}px`;
-      clone.style.width = '30px';
-      clone.style.opacity = '0.5';
-    }, 10);
+  requestAnimationFrame(() => {
+    clone.style.left = `${cartRect.left}px`;
+    clone.style.top = `${cartRect.top}px`;
+    clone.style.opacity = '0.5';
+    clone.style.transform = 'scale(0.2)';
+  });
 
-    setTimeout(() => {
-      document.body.removeChild(clone);
-    }, 1000);
+  setTimeout(() => { document.body.removeChild(clone); }, 1000);
+
   }
 
 

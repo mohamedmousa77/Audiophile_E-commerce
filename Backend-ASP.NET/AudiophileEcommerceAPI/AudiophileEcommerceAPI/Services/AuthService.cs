@@ -12,17 +12,25 @@ namespace AudiophileEcommerceAPI.Services
     public class AuthService : IAuthService
     {
         private readonly AppDbContext _context;
+        private readonly IConfiguration _config;
 
-        public AuthService(AppDbContext context)
+        public AuthService(AppDbContext context, IConfiguration config)
         {
             _context = context;
+            _config = config;
         }
 
-        public async Task<CustomerInfo?> AuthenticateCustomer(string email, string password)
+        public async Task<AuthResult> AuthenticateCustomer(string email, string password)
         {
-            // NOTE: Hashing and security should be added in real apps!
-            return await _context.Customers
-                .FirstOrDefaultAsync(u => u.Email == email && u.Phone == password);
+            var user = await _context.Customers.FirstOrDefaultAsync(u => u.Email == email);
+            if (user == null || user.Password != password) // replace with hash check
+            {
+                return new AuthResult { Success = false, Message = "Invalid credentials" };
+            }
+
+            var token = GenerateJwtToken(user);
+            return new AuthResult { Success = true, Token = token };
+
         }
 
         public async Task<AuthResult> RegisterCustomer(RegisterDto dto)

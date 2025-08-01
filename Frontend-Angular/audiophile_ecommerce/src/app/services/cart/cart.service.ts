@@ -11,6 +11,7 @@ import { ApiService } from '../api/api.service';
 export class CartService {
   private apiUrl = '';
   private cartItems: any[] = [];
+  private cartItemCount = new BehaviorSubject<number>(0);
   private cartSubject = new BehaviorSubject<any[]>([]);
 
   cart$ = this.cartSubject.asObservable();
@@ -39,5 +40,13 @@ export class CartService {
 
   updateCartItem(customerId: number, productId: number, quantity: number) : Observable<boolean> {
     return this.http.put<boolean> (`${this.apiUrl}/${customerId}/update/${productId}`, quantity);
+  }
+
+  getCartItemCount(): Observable<number> {
+    return this.cartItemCount.asObservable();
+  }
+
+  setCartItemCount(count: number) {
+    this.cartItemCount.next(count);
   }
 }

@@ -37,12 +37,11 @@ namespace AudiophileEcommerceAPI.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
-            var user = await _authService.AuthenticateCustomer (request.Email, request.Password);
-            if (user == null)
-                return Unauthorized();
+            var result = await _authService.AuthenticateCustomer (request.Email, request.Password);
+            if (!result.Success)
+                return Unauthorized(result);
 
-            var token = _authService.GenerateJwtToken(user);
-            return Ok(new { token, userId = user.Id, userName = user.FullName });
+            return Ok(result);
         }
     }
 }

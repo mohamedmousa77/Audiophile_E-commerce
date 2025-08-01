@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, HostListener } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { CartService } from '../../../services/cart/cart.service';
+import { AuthService } from '../../../services/auth/auth.service';
 @Component({
   selector: 'app-header',
   imports: [CommonModule],
@@ -11,16 +12,19 @@ import { CartService } from '../../../services/cart/cart.service';
 export class HeaderComponent {
   @HostListener('window:scroll', [])
 
+  cartVisible = false;
   isScrolled = false;
   currentUrl: string = '';
 
   cartItems: any[] = [];
-  total: number = 0;
+  totalPrice: number = 0;
+  totalItemsCount: number = 0;
 
   constructor
   (
     private router: Router, 
     private cartService: CartService,
+    private authService: AuthService,
   ) {
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
@@ -30,11 +34,16 @@ export class HeaderComponent {
   }
 
   ngOnInit() {
-    const customerId = 1;
-    // this.authService.getUserId();
+    const customerId = this.authService.getUserIdFromToken();
+    if(!customerId) return;
+
     this.cartService.getCart(customerId).subscribe(cart => {
       this.cartItems = cart.items;
-      this.total = cart.items.reduce((acc, item) => acc + item.product!.price * item.quantity, 0);
+      this.totalPrice = cart.items.reduce((acc, item) => acc + item.product!.price * item.quantity, 0);
+    });
+    // To fetch the item count
+    this.cartService.getCartItemCount().subscribe(count => {
+      this.totalItemsCount = count;
     });
   }
 
@@ -55,6 +64,22 @@ export class HeaderComponent {
       return currentUrl === '/' || currentUrl === '/home';
     }
     return currentUrl.includes(`/category/${category}`);
+  }
+
+  
+  showCart() {
+    const userId = this.authService.getUserIdFromToken();
+    if (!userId) return;
+
+    this.cartService.getCart(userId).subscribe(cart => {
+      this.cartItems = cart.items;
+      this.totalPrice = cart.items.reduce((sum, item) => sum + item.product!.price * item.quantity, 0);
+      this.cartVisible = true;
+    });
+  }
+
+  hideCart() {
+    this.cartVisible = false;
   }
 
 }

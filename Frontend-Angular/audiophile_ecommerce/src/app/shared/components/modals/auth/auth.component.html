@@ -1,0 +1,31 @@
+<div class="modal fade" id="authModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content p-4 shadow-lg">
+            <div class="modal-header border-0">
+                <h5 class="modal-title">{{ isLogin ? 'Login' : 'Register' }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form (submit)="onSubmit()" [formGroup]="authForm">
+                <div class="modal-body">
+                    <button class="btn-close" (click)="closeModal()"></button>
+                    <div *ngIf="!isLogin" class="mb-3">
+                    <input type="text" formControlName="fullName" class="form-control" placeholder="Full Name">
+                    </div>
+                    <div class="mb-3">
+                    <input type="email" formControlName="email" class="form-control" placeholder="Email">
+                    </div>
+                    <div class="mb-3">
+                    <input type="password" formControlName="password" class="form-control" placeholder="Password">
+                    </div>
+                </div>
+                <div class="modal-footer border-0 justify-content-between">
+                    <button type="submit" class="btn btn-primary w-100">{{ isLogin ? 'Login' : 'Register' }}</button>
+                </div>
+                <p class="text-center mt-3">
+                    {{ isLogin ? 'Don’t have an account?' : 'Already have an account?' }}
+                    <a href="#" (click)="toggleMode($event)">{{ isLogin ? 'Register' : 'Login' }}</a>
+                </p>
+            </form>
+        </div>
+    </div>
+</div>

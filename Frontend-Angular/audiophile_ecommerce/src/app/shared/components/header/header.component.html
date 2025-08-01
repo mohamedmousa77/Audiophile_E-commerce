@@ -30,9 +30,22 @@
         [class.active]="isActiveCategory('earphones')"
       >Earphones</a>
     </nav>
-
-    <a routerLink="/cart" class="text-white">
+    <a routerLink="/cart" class="text-white cart-icon" #cartIcon>
       <i class="fas fa-shopping-cart fa-lg"></i>
     </a>
+
+    <div class="cart-icon" id="cartIcon" (mouseenter)="showCart()" (mouseleave)="hideCart()">
+      <img src="icon-cart.png">
+      <span *ngIf="totalItemsCount > 0">{{ totalItemsCount }}</span>
+
+      <div class="cart-popup" *ngIf="cartVisible">
+        <div *ngFor="let item of cartItems">
+          <p>{{ item.product.name }} x{{ item.quantity }}</p>
+          <p>{{ item.product.price * item.quantity }} $</p>
+        </div>
+        <p class="fw-bold">Total: {{ totalPrice }} $</p>
+      </div>
+    </div>
+
   </div>
 </header>

@@ -10,17 +10,17 @@ namespace AudiophileEcommerceAPI.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<bool>(
-                name: "IsNew",
-                table: "Products",
-                type: "bit",
-                nullable: true);
+            //migrationBuilder.AddColumn<bool>(
+            //    name: "IsNew",
+            //    table: "Products",
+            //    type: "bit",
+            //    nullable: true);
 
-            migrationBuilder.AddColumn<bool>(
-                name: "IsPromotion",
-                table: "Products",
-                type: "bit",
-                nullable: true);
+            //migrationBuilder.AddColumn<bool>(
+            //    name: "IsPromotion",
+            //    table: "Products",
+            //    type: "bit",
+            //    nullable: true);
 
             migrationBuilder.AddColumn<string>(
                 name: "Password",

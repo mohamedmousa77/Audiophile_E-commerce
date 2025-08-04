@@ -6,35 +6,39 @@ import { Product } from '../../models/product';
 import { CartService } from '../../services/cart/cart.service';
 import { CartItemDTO } from '../../models/cartItemDTO';
 import { AuthService } from '../../services/auth/auth.service';
-
-// import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-
-
+import { AuthComponent } from '../../shared/components/modals/auth/auth.component';
+import { FlyToCartDirective } from '../../shared/directives/fly-to-cart.directive';
 
 @Component({
   selector: 'app-product-details',
-  imports: [CommonModule],
+  imports: [CommonModule, AuthComponent, FlyToCartDirective],
   templateUrl: './product-details.component.html',
   styleUrl: './product-details.component.css'
 })
 
 export class ProductDetailsComponent {
-  @ViewChild('productImage') productImage!: ElementRef;
-  @ViewChild('authModal') authModalRef: any;
-  @ViewChild('cartIcon', { read: ElementRef }) cartIcon!: ElementRef; // pass this via service or shared logic
+  @ViewChild('authModal') authComponent!: AuthComponent;
+  @ViewChild(FlyToCartDirective) flyDirective!: FlyToCartDirective;
+  // @ViewChild('productImage') productImage!: ElementRef;
+  // @ViewChild('authModal') authModalRef: any;
+  // @ViewChild(AuthComponent) authComponent!: AuthComponent;
+  // @ViewChild('cartIcon', { read: ElementRef }) cartIcon!: ElementRef; // pass this via service or shared logic
+
+
+  companyName = 'Audiophile';
+  productsSuggested: Product[] = [];
 
   productId: number = 0;
   product: any;
-  companyName = 'Audiophile';
   productQuantity = 1;
-  productsSuggested: Product[] = [];
+  
 
   constructor(
-    private router: Router,
     private productService: ProductService,
     private cartService: CartService,
     private authService: AuthService,
-    private renderer: Renderer2,
+    // private renderer: Renderer2,
+    private router: Router,
   ) { }
 
   ngOnInit() {
@@ -46,8 +50,6 @@ export class ProductDetailsComponent {
     const storedProduct = sessionStorage.getItem('selectedProduct');
     if (storedProduct) {
       this.product = JSON.parse(storedProduct);
-    } else {
-      // fallback API call if needed.
     }
 
     if(this.product){
@@ -56,13 +58,19 @@ export class ProductDetailsComponent {
   }
 
   addToCart() {
+    console.log(`add to cart called!`);
+
     if(!this.authService.getToken()){
-      const modalEl = document.getElementById('authModal');
-      if (modalEl) {
-        (modalEl as any).style.display = 'block';
-        (modalEl as any).classList.add('show');
-      }
+      console.log(`User is not authenticated, there is no token: ${this.authService.getToken()}`);
+      this.authComponent.showModal();
+      // const modalEl = document.getElementById('authModal');
+      // if (modalEl) {
+      //   (modalEl as any).style.display = 'block';
+      //   (modalEl as any).classList.add('show');
+      // }
       return;
+    }else {
+      console.log(`Error while loading the token. Unalbe to authenticate`);
     }
     const customerId = this.authService.getUserIdFromToken();
     if(!customerId) return;
@@ -74,10 +82,12 @@ export class ProductDetailsComponent {
 
     this.cartService.addToCart(customerId, item).subscribe({
       next: () => {
-        this.animateToCart(); // funzione opzionale
-        // this.updateCartCount(); //TODO: funzione da implementare per aggiornare il numero accanto
-        this.cartService.getCart(customerId); // to refresh the cart
-        this.cartService.setCartItemCount(this.productQuantity);
+        // this.animateToCart(); // funzione opzionale
+        this.flyDirective.fly();
+        this.cartService.getCart(customerId).subscribe( cart => {
+          const totalItemsCount = cart.items?.reduce((sum, item) => sum + item.quantity, 0) ||0;
+          this.cartService.setCartItemCount(totalItemsCount);
+        });
       },
       error: err => {
         console.error("Errore aggiunta al carrello", err);
@@ -85,35 +95,35 @@ export class ProductDetailsComponent {
     });
   }
 
-  animateToCart() {
-  const productImg = document.getElementById('mainProductImg');
-  const cartIcon = document.getElementById('cartIcon');
+  // animateToCart() {
+  // const productImg = document.getElementById('mainProductImg');
+  // const cartIcon = document.getElementById('cartIcon');
 
-  if (!productImg || !cartIcon) return;
+  // if (!productImg || !cartIcon) return;
 
-  const clone = productImg.cloneNode(true) as HTMLElement;
-  const imgRect = productImg.getBoundingClientRect();
-  const cartRect = cartIcon.getBoundingClientRect();
+  // const clone = productImg.cloneNode(true) as HTMLElement;
+  // const imgRect = productImg.getBoundingClientRect();
+  // const cartRect = cartIcon.getBoundingClientRect();
 
-  clone.style.position = 'fixed';
-  clone.style.left = `${imgRect.left}px`;
-  clone.style.top = `${imgRect.top}px`;
-  clone.style.width = `${imgRect.width}px`;
-  clone.style.zIndex = '1000';
-  clone.style.transition = 'all 0.9s ease-in-out';
+  // clone.style.position = 'fixed';
+  // clone.style.left = `${imgRect.left}px`;
+  // clone.style.top = `${imgRect.top}px`;
+  // clone.style.width = `${imgRect.width}px`;
+  // clone.style.zIndex = '1000';
+  // clone.style.transition = 'all 0.9s ease-in-out';
 
-  document.body.appendChild(clone);
+  // document.body.appendChild(clone);
 
-  requestAnimationFrame(() => {
-    clone.style.left = `${cartRect.left}px`;
-    clone.style.top = `${cartRect.top}px`;
-    clone.style.opacity = '0.5';
-    clone.style.transform = 'scale(0.2)';
-  });
+  // requestAnimationFrame(() => {
+  //   clone.style.left = `${cartRect.left}px`;
+  //   clone.style.top = `${cartRect.top}px`;
+  //   clone.style.opacity = '0.5';
+  //   clone.style.transform = 'scale(0.2)';
+  // });
 
-  setTimeout(() => { document.body.removeChild(clone); }, 1000);
+  // setTimeout(() => { document.body.removeChild(clone); }, 1000);
 
-  }
+  // }
 
 
   incrementQuantity(){
@@ -121,13 +131,9 @@ export class ProductDetailsComponent {
   }
 
   discrementQuantity(){
-    if(this.productQuantity <= 1)
-    {
-      null;
-    }
-    else{ 
+    if (this.productQuantity > 1) {
       this.productQuantity--;
-    } 
+    }
   }
 
   viewProduct(product: Product) {

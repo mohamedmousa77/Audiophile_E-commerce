@@ -1,6 +1,7 @@
 ﻿using AudiophileEcommerceAPI.Data;
 using AudiophileEcommerceAPI.DTOs;
 using AudiophileEcommerceAPI.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -23,7 +24,7 @@ namespace AudiophileEcommerceAPI.Services
         public async Task<AuthResult> AuthenticateCustomer(string email, string password)
         {
             var user = await _context.Customers.FirstOrDefaultAsync(u => u.Email == email);
-            if (user == null || user.Password != password) // replace with hash check
+            if (user == null || !BCrypt.Net.BCrypt.Verify(password, user.Password)) // replace with hash check
             {
                 return new AuthResult { Success = false, Message = "Invalid credentials" };
             }
@@ -33,7 +34,7 @@ namespace AudiophileEcommerceAPI.Services
 
         }
 
-        public async Task<AuthResult> RegisterCustomer(RegisterDto dto)
+        public async Task<AuthResult> RegisterCustomer([FromBody] RegisterDto dto)
         {
             if (_context.Customers.Any(x => x.Email == dto.Email))
                 return new AuthResult { Success = false, Message = "Email already in use" };
@@ -42,14 +43,13 @@ namespace AudiophileEcommerceAPI.Services
             {
                 FullName = dto.FullName,
                 Email = dto.Email,
-                // Store hashed password instead!
                 Phone = dto.Phone,
                 Address = dto.Address,
                 City = dto.City,
                 Country = dto.Country,
                 ZipCode = dto.ZipCode,
             };
-
+            customer.Password = BCrypt.Net.BCrypt.HashPassword(dto.Password);
             _context.Customers.Add(customer);
             await _context.SaveChangesAsync();
 
@@ -62,7 +62,7 @@ namespace AudiophileEcommerceAPI.Services
             {
             new Claim(ClaimTypes.Name, user.FullName),
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
-        };
+            };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]!));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);

@@ -26,9 +26,12 @@ namespace AudiophileEcommerceAPI.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterDto dto)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var result = await _authService.RegisterCustomer(dto);
             if (!result.Success)
-                return BadRequest(result.Message);
+                return BadRequest(result.Message);        
 
             return Ok(new { token = result.Token });
         }

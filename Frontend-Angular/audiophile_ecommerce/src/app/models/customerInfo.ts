@@ -8,6 +8,6 @@ export interface CustomerInfo {
     phone: string;
     city: string;
     country: string;
-    zipCode: number;
+    zipCode: string;
     cart?: Cart;
 }

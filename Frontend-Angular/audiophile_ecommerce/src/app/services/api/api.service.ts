@@ -6,7 +6,7 @@ import { enviroment } from '../../environments/enviroment';
 })
 export class ApiService {
 
-  private baseUrl = enviroment.apiUrl;
+  readonly baseUrl = enviroment.apiUrl;
   getBaseUrl(): string {
     return this.baseUrl;
   }

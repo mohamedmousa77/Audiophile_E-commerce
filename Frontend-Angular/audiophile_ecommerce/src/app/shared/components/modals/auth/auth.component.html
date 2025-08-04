@@ -1,29 +1,78 @@
 <div class="modal fade" id="authModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content p-4 shadow-lg">
+        <div class="modal-content p-4 auth-modal">
             <div class="modal-header border-0">
-                <h5 class="modal-title">{{ isLogin ? 'Login' : 'Register' }}</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <h5 class="modal-title text-uppercase">{{ isLogin ? 'Login' : 'Register' }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" (click)="closeModal()"></button>
             </div>
-            <form (submit)="onSubmit()" [formGroup]="authForm">
+
+            <form (ngSubmit)="onSubmit()" [formGroup]="authForm" class="auth-form">
                 <div class="modal-body">
-                    <button class="btn-close" (click)="closeModal()"></button>
+                    <div *ngIf="loginError" class="alert alert-danger">{{ loginError }}</div>
+
                     <div *ngIf="!isLogin" class="mb-3">
+                    <label class="form-label">Full Name</label>
                     <input type="text" formControlName="fullName" class="form-control" placeholder="Full Name">
                     </div>
+
                     <div class="mb-3">
-                    <input type="email" formControlName="email" class="form-control" placeholder="Email">
+                    <label class="form-label">Email</label>
+                    <input type="email" formControlName="email" class="form-control" placeholder="Email address">
+                    <div *ngIf="authForm.controls['email'].touched && authForm.controls['email'].invalid" class="text-danger small mt-1">
+                        Valid email is required.
                     </div>
-                    <div class="mb-3">
-                    <input type="password" formControlName="password" class="form-control" placeholder="Password">
+                    </div>
+
+                    <div class="mb-3 position-relative password-wrapper">
+                        <label class="form-label">Password</label>
+                        <input [type]="showPassword ? 'text' : 'password'" formControlName="password" class="form-control" placeholder="Password">
+                        <span class="toggle-password" (click)="showPassword = !showPassword">
+                            {{ showPassword ? '🙈' : '👁️' }}
+                        </span>
+                        <div *ngIf="authForm.controls['password'].touched">
+                            <div *ngIf="authForm.controls['password'].hasError('required')" class="text-danger small">
+                                Password is required.
+                            </div>
+                            <div *ngIf="authForm.controls['password'].hasError('minlength')" class="text-danger small">
+                                Password must be at least 6 characters.
+                            </div>
+                        </div>
+                    </div>
+                    <div *ngIf="!isLogin">
+                        <div class="mb-3">
+                            <label>Phone</label>
+                            <input type="text" class="form-control" formControlName="phone" placeholder="Phone Number">
+                        </div>
+                        <div class="mb-3">
+                            <label>Address</label>
+                            <input type="text" class="form-control" formControlName="address" placeholder="Address">
+                        </div>
+                        <div class="mb-3">
+                            <label>City</label>
+                            <input type="text" class="form-control" formControlName="city" placeholder="City">
+                        </div>
+                        <div class="mb-3">
+                            <label>Country</label>
+                            <input type="text" class="form-control" formControlName="country" placeholder="Country">
+                        </div>
+                        <div class="mb-3">
+                            <label>Zip Code</label>
+                            <input type="text" class="form-control" formControlName="zipCode" placeholder="Zip Code">
+                        </div>
                     </div>
                 </div>
-                <div class="modal-footer border-0 justify-content-between">
-                    <button type="submit" class="btn btn-primary w-100">{{ isLogin ? 'Login' : 'Register' }}</button>
+
+                <div class="modal-footer border-0">
+                    <button type="submit" class="btn btn-auth w-100" [disabled]="isLoading || authForm.invalid">
+                    {{ isLoading ? 'Please wait...' : (isLogin ? 'Login' : 'Register') }}
+                    </button>
                 </div>
-                <p class="text-center mt-3">
-                    {{ isLogin ? 'Don’t have an account?' : 'Already have an account?' }}
-                    <a href="#" (click)="toggleMode($event)">{{ isLogin ? 'Register' : 'Login' }}</a>
+
+                <p class="text-center mt-3 small">
+                    {{ isLogin ? 'Don’t have an account?' : 'Already registered?' }}
+                    <a href="#" class="ms-1 toggle-link" (click)="toggleMode($event)">
+                        {{ isLogin ? 'Register' : 'Login' }}
+                    </a>
                 </p>
             </form>
         </div>

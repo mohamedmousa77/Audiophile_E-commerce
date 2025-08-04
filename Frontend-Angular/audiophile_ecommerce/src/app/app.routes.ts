@@ -6,5 +6,6 @@ import { ProductDetailsComponent } from './pages/product-details/product-details
 export const routes: Routes = [
     { path: '', component: HomeComponent },
     { path: 'category/:categoryName', component: CategoryComponent},
-    { path: 'product/:id', component: ProductDetailsComponent }
+    { path: 'product/:id', component: ProductDetailsComponent },
+    // { path: 'checkout', component: CheckoutComponent,canActivate: [AuthGuard]}
 ];

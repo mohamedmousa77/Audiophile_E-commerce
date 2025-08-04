@@ -22,7 +22,7 @@ export class AuthService {
     private apiServices: ApiService,
     private router: Router
   ) {
-    this.apiUrl = this.apiServices.getBaseUrl + '/auth';
+    this.apiUrl = this.apiServices.getBaseUrl() + '/auth';
   }
 
   login(email: string, password: string): Observable<any> {
@@ -42,6 +42,8 @@ export class AuthService {
   }
 
   isAuthenticated(): Observable<boolean> {
+    console.log(`is authenticated called`);
+    
     return this.authStatus.asObservable();
   }
 
@@ -57,6 +59,8 @@ export class AuthService {
   }
 
   getUserIdFromToken(): number | null {
+    console.log(`Get user from token called.`);
+    
     const token = this.getToken();
     if (!token) return null;
     try{ 

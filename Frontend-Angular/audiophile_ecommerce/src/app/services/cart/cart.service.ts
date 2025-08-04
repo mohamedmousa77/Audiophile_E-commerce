@@ -19,7 +19,7 @@ export class CartService {
   constructor(
     private http: HttpClient, 
     private api: ApiService ) { 
-    this.apiUrl = this.api.getBaseUrl + '/cart';
+    this.apiUrl = this.api.getBaseUrl() + '/cart';
   }
 
   getCart(customerId: number): Observable<Cart> {

@@ -3,35 +3,37 @@
     <div class="row align-items-center g-5 rounded shadow ">
         <!-- Product Image Gallery -->
         <div class="col-lg-6 text-center">
-            <img src="3D_Speaker-image.png" 
-            alt="Product Image" 
-            class="img-fluid" 
-            style="max-height: 500px;"
-            id="mainProductImg" #productImage>
-        </div>
+          <img src="3D_Speaker-image.png"          
+          style="max-height: 500px;"
+          alt="Product Image" 
+          class="img-fluid" 
+          id="mainProductImg" 
+          #productImage
+          appFlyToCart
+          [cartIconId]="'cartIcon'"
+        ></div>
         <!-- Product Details -->
         <div class="col-lg-6">
-            <div *ngIf="product">
-                <p class="company-name">{{companyName.toUpperCase()}}</p>
-                <h1 class="product-title"> {{product.name}} </h1>
-                <p class="product-desc">{{product.description}}</p>
-                <h1 class="product-price">{{product.price}} $</h1>
-                <div class="add-cart-row">
-                    <div class="items-count"> 
-                        <img src="icon-plus.png" class="increment-icon" (click)="incrementQuantity()">
-                        <h1 id="itemCount"> {{productQuantity}} </h1>
-                        <img src="icon-minus.png" class="decrement-icon" (click)="discrementQuantity()">
-                    </div>
-                    <button class="cart-btn-wrapper" id="addToCart">
-                        <img src="icon-cart.png" class="add-cart-icon">
-                        Add To Cart
-                    </button>
-                </div>
+          <div *ngIf="product">
+            <p class="company-name">{{companyName.toUpperCase()}}</p>
+            <h1 class="product-title"> {{product.name}} </h1>
+            <p class="product-desc">{{product.description}}</p>
+            <h1 class="product-price">{{product.price}} $</h1>
+            <div class="add-cart-row">
+              <div class="items-count"> 
+                <img src="icon-plus.png" class="increment-icon" (click)="incrementQuantity()">
+                <h1 id="itemCount"> {{productQuantity}} </h1>
+                <img src="icon-minus.png" class="decrement-icon" (click)="discrementQuantity()">
+              </div>
+              <button class="cart-btn-wrapper" id="addToCart" (click)="addToCart()">
+                <img src="icon-cart.png" class="add-cart-icon">
+                Add To Cart
+              </button>
             </div>
+          </div>
         </div>
     </div>
 
-  <!--TODO:  Recommended Products Section -->
   <div class="container-fluid mt-5">
     <h3 class="mb-3">Products You May Like</h3>
     <div class="suggested-products-scroll d-flex overflow-auto">
@@ -45,5 +47,5 @@
       </div>
     </div>
   </div>
-
+<app-auth #authModal></app-auth>
 </div>

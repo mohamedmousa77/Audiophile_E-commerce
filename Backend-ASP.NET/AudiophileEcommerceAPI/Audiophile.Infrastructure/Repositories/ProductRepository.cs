@@ -5,10 +5,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AudiophileEcommerceAPI.Services
 {
-    public class ProductService : IProductService
+    public class ProductRepository : IProductRepository
     {
         private readonly AppDbContext _appDbContext;
-        public ProductService(AppDbContext appDbContext)
+        public ProductRepository(AppDbContext appDbContext)
         {
             _appDbContext = appDbContext;
         }

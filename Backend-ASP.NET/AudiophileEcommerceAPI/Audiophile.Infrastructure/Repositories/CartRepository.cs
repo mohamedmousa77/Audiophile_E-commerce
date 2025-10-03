@@ -4,10 +4,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AudiophileEcommerceAPI.Services
 {
-    public class CartService : ICartService
+    public class CartRepository : ICartRepository
     {
         public readonly AppDbContext _appDbContext;
-        public CartService(AppDbContext appDbContext)
+        public CartRepository(AppDbContext appDbContext)
         {
             _appDbContext = appDbContext;
         }

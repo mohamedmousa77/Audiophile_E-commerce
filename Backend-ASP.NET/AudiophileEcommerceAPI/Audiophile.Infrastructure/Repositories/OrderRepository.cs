@@ -5,10 +5,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AudiophileEcommerceAPI.Services
 {
-    public class OrderService : IOrderService
+    public class OrderRepository : IOrderRepository
     {
         public readonly AppDbContext _appDbContext;
-        public OrderService(AppDbContext appDbContext) { 
+        public OrderRepository(AppDbContext appDbContext) { 
             _appDbContext = appDbContext; 
         }
         public async Task<Order> CreateOrder(OrderDTO orderDTO)

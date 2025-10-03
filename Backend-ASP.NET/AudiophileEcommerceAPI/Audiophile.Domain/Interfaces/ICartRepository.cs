@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace AudiophileEcommerceAPI.Services
 {
-    public interface ICartService
+    public interface ICartRepository
     {
         Task<Cart> GetCartByCustomerId(int customerId);
         Task<bool> AddToCart(int customerId, int productId, int quantity);

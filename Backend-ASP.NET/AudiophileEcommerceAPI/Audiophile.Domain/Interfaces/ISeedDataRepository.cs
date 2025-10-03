@@ -1,6 +1,6 @@
 ﻿namespace AudiophileEcommerceAPI.Services
 {
-    public interface ISeedDataService
+    public interface ISeedDataRepository
     {
         void Seed();
     }

@@ -3,11 +3,11 @@ using AudiophileEcommerceAPI.Models;
 
 namespace AudiophileEcommerceAPI.Services
 {
-    public class SeedDataService : ISeedDataService
+    public class SeedDataRepository : ISeedDataRepository
     {
         private readonly AppDbContext _context;
 
-        public SeedDataService(AppDbContext context)
+        public SeedDataRepository(AppDbContext context)
         {
             _context = context;
         }

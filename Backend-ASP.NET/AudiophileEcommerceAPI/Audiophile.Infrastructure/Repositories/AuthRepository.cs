@@ -10,12 +10,12 @@ using System.Text;
 
 namespace AudiophileEcommerceAPI.Services
 {
-    public class AuthService : IAuthService
+    public class AuthRepository : IAuthRepository
     {
         private readonly AppDbContext _context;
         private readonly IConfiguration _config;
 
-        public AuthService(AppDbContext context, IConfiguration config)
+        public AuthRepository(AppDbContext context, IConfiguration config)
         {
             _context = context;
             _config = config;

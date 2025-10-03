@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 
 namespace AudiophileEcommerceAPI.Services
 {
-    public interface IOrderService
+    public interface IOrderRepository
     {
         Task<IEnumerable<OrderDTO>> GetAllOrders();
         Task<OrderDTO?> GetOrderById(int id);

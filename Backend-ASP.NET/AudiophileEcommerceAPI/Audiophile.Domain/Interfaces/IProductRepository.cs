@@ -3,7 +3,7 @@ using AudiophileEcommerceAPI.Models;
 
 namespace AudiophileEcommerceAPI.Services
 {
-    public interface IProductService
+    public interface IProductRepository
     {
         Task<IEnumerable<Product>> GetAllProducts();
         Task<Product?> GetProductById(int id);

@@ -12,7 +12,7 @@ builder.Services.AddSwaggerGen();
 
 // EF Core
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Dipendenze custom
 builder.Services.AddScoped<IProductService, ProductService>();

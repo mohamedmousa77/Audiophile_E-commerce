@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace AudiophileEcommerceAPI.DTOs
+namespace Audiophile.Application.DTOs
 {
     public class ProductDTO
     {

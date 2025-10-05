@@ -1,7 +1,7 @@
-﻿using AudiophileEcommerceAPI.DTOs;
-using AudiophileEcommerceAPI.Models;
+﻿
+using Audiophile.Domain.Models;
 
-namespace AudiophileEcommerceAPI.Services
+namespace Audiophile.Domain.Interfaces
 {
     public interface IProductRepository
     {
@@ -9,7 +9,7 @@ namespace AudiophileEcommerceAPI.Services
         Task<Product?> GetProductById(int id);
         Task<IEnumerable<Product>> GetByCategory(string category);
 
-        Task<ProductDTO> CreateProduct(Product product);
+        Task<Product> CreateProduct(Product product);
 
         Task<bool> UpdateProduct(Product product);
 

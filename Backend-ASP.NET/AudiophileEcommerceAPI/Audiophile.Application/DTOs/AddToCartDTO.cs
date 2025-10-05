@@ -1,4 +1,4 @@
-﻿namespace AudiophileEcommerceAPI.DTOs
+﻿namespace Audiophile.Application.DTOs
 {
     public class AddToCartDTO
     {

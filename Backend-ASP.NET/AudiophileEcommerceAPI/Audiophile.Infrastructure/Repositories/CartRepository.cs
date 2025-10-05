@@ -1,6 +1,5 @@
 ﻿using AudiophileEcommerceAPI.Data;
 using AudiophileEcommerceAPI.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace AudiophileEcommerceAPI.Services
 {

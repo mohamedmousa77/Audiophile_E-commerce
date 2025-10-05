@@ -1,7 +1,8 @@
-﻿using AudiophileEcommerceAPI.DTOs;
-using AudiophileEcommerceAPI.Models;
+﻿using Audiophile.Application.DTOs;
 
-namespace AudiophileEcommerceAPI.Services
+using Audiophile.Domain.Models;
+
+namespace Audiophile.Application.Services
 {
     public interface IAuthService
     {

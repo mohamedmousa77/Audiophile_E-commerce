@@ -1,9 +1,8 @@
-﻿using AudiophileEcommerceAPI.Data;
-using AudiophileEcommerceAPI.Models;
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using Audiophile.Domain.Models;
 
-namespace AudiophileEcommerceAPI.Services
+namespace Audiophile.Domain.Interfaces
 {
     public interface ICartRepository
     {

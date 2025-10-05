@@ -1,4 +1,4 @@
-﻿namespace AudiophileEcommerceAPI.Models
+﻿namespace Audiophile.Domain.Models
 {
     public class CustomerInfo
     {

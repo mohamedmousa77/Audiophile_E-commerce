@@ -1,4 +1,4 @@
-﻿namespace AudiophileEcommerceAPI.Services
+﻿namespace Audiophile.Domain.Interfaces
 {
     public interface ISeedDataRepository
     {

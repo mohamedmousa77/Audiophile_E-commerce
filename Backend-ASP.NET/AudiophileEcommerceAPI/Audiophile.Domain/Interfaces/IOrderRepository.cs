@@ -1,15 +1,13 @@
-﻿using AudiophileEcommerceAPI.DTOs;
-using AudiophileEcommerceAPI.Models;
-using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
+﻿using Audiophile.Domain.Models;
 
-namespace AudiophileEcommerceAPI.Services
+namespace Audiophile.Domain.Interfaces
 {
     public interface IOrderRepository
     {
-        Task<IEnumerable<OrderDTO>> GetAllOrders();
-        Task<OrderDTO?> GetOrderById(int id);
-        Task<Order> CreateOrder(OrderDTO orderDTO);
-        Task<bool> UpdateOrder(OrderDTO orderDTO);
+        Task<IEnumerable<Order>> GetAllOrders();
+        Task<Order?> GetOrderById(int id);
+        Task<Order> CreateOrder(Order orderDTO);
+        Task<bool> UpdateOrder(Order orderDTO);
         Task<bool> DeleteOrder(int id);
 
     }

@@ -1,9 +1,9 @@
-﻿using AudiophileEcommerceAPI.Data;
-using AudiophileEcommerceAPI.DTOs;
-using AudiophileEcommerceAPI.Models;
-using Microsoft.EntityFrameworkCore;
+﻿using Audiophile.Domain;
+using Audiophile.Domain.Models;
+using Audiophile.Infrastructure.Data;
 
-namespace AudiophileEcommerceAPI.Services
+
+namespace Audiophile.Infrastructure.Repositories
 {
     public class OrderRepository : IOrderRepository
     {

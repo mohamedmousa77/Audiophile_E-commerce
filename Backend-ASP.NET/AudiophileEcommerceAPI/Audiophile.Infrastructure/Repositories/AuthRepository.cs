@@ -1,16 +1,11 @@
 ﻿using AudiophileEcommerceAPI.Data;
-using AudiophileEcommerceAPI.DTOs;
 using AudiophileEcommerceAPI.Models;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
 namespace AudiophileEcommerceAPI.Services
 {
-    public class AuthRepository : IAuthRepository
+    public class AuthRepository : IAuthService
     {
         private readonly AppDbContext _context;
         private readonly IConfiguration _config;
@@ -56,6 +51,12 @@ namespace AudiophileEcommerceAPI.Services
             var token = GenerateJwtToken(customer);
             return new AuthResult { Success = true, Token = token };
         }
+
+        public Task<AuthResult> RegisterCustomer(RegisterDto dto)
+        {
+            throw new NotImplementedException();
+        }
+
         string GenerateJwtToken(CustomerInfo user)
         {
             var claims = new[]

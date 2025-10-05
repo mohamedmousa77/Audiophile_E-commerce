@@ -10,11 +10,13 @@ Contiene le DbSet<T> per ogni entità del tuo dominio (Product, Order, ecc.)
 Si occupa di mappare le classi .cs (modelli) alle tabelle nel database
 */
 
+using Microsoft.EntityFrameworkCore;
 using Audiophile.Domain.Models;
 
-namespace AudiophileEcommerceAPI.Data
+namespace Audiophile.Infrastructure.Data
 {
     public class AppDbContext : DbContext
+
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 

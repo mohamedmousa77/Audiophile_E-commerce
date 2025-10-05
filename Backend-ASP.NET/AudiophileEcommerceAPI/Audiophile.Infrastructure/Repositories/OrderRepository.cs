@@ -1,6 +1,8 @@
 ﻿using Audiophile.Domain;
 using Audiophile.Domain.Models;
 using Audiophile.Infrastructure.Data;
+using Audiophile.Domain.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 
 namespace Audiophile.Infrastructure.Repositories
@@ -11,7 +13,8 @@ namespace Audiophile.Infrastructure.Repositories
         public OrderRepository(AppDbContext appDbContext) { 
             _appDbContext = appDbContext; 
         }
-        public async Task<Order> CreateOrder(OrderDTO orderDTO)
+        
+        public async Task<Order> CreateOrder(Order orderDTO)
         {
 
             // Create and save the cx info
@@ -94,7 +97,7 @@ namespace Audiophile.Infrastructure.Repositories
             return true;
         }
 
-        public async Task<IEnumerable<OrderDTO>> GetAllOrders()
+        public async Task<IEnumerable<Order>> GetAllOrders()
         {
             return await _appDbContext.Orders
                 .Include(o => o.CustomerInfoId)
@@ -117,7 +120,7 @@ namespace Audiophile.Infrastructure.Repositories
                 }).ToListAsync();
         }
 
-        public async Task<OrderDTO?> GetOrderById(int id)
+        public async Task<Order?> GetOrderById(int id)
         {
             var order = await _appDbContext.Orders
                 .Include(o => o.CustomerInfo)
@@ -144,7 +147,7 @@ namespace Audiophile.Infrastructure.Repositories
             };
         }
 
-        public async Task<bool> UpdateOrder(OrderDTO orderDTO)
+        public async Task<bool> UpdateOrder(Order orderDTO)
         {
             var customer = await _appDbContext.Customers
                 .FirstOrDefaultAsync( c=> c.Email == orderDTO.Email);

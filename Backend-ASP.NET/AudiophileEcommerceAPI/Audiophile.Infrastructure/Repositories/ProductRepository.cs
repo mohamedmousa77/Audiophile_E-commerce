@@ -1,9 +1,11 @@
-﻿using AudiophileEcommerceAPI.Data;
-using AudiophileEcommerceAPI.DTOs;
-using AudiophileEcommerceAPI.Models;
+﻿using Audiophile.Infrastructure.Data;
+using Audiophile.Domain.Models;
+using Audiophile.Domain.Interfaces;
+
+
 using Microsoft.EntityFrameworkCore;
 
-namespace AudiophileEcommerceAPI.Services
+namespace Audiophile.Infrastructure.Repositories
 {
     public class ProductRepository : IProductRepository
     {
@@ -12,7 +14,7 @@ namespace AudiophileEcommerceAPI.Services
         {
             _appDbContext = appDbContext;
         }
-        public async Task<ProductDTO> CreateProduct(Product product)
+        public async Task<Product> CreateProduct(Product product)
         {
             _appDbContext.Products.Add(product);
             await _appDbContext.SaveChangesAsync();

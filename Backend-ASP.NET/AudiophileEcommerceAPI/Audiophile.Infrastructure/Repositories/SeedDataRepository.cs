@@ -1,7 +1,8 @@
-﻿using AudiophileEcommerceAPI.Data;
-using AudiophileEcommerceAPI.Models;
+﻿using Audiophile.Domain.Interfaces;
+using Audiophile.Domain.Models;
+using Audiophile.Infrastructure.Data;
 
-namespace AudiophileEcommerceAPI.Services
+namespace Audiophile.Infrastructure.Repositories
 {
     public class SeedDataRepository : ISeedDataRepository
     {

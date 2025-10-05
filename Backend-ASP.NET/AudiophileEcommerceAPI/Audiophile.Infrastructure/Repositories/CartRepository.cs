@@ -1,7 +1,9 @@
-﻿using AudiophileEcommerceAPI.Data;
-using AudiophileEcommerceAPI.Models;
+﻿using Audiophile.Infrastructure.Data;
+using Audiophile.Domain.Models;
+using Audiophile.Domain.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
-namespace AudiophileEcommerceAPI.Services
+namespace Audiophile.Infrastructure.Repositories
 {
     public class CartRepository : ICartRepository
     {

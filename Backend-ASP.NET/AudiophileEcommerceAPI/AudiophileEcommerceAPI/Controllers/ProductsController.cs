@@ -1,5 +1,6 @@
-﻿using AudiophileEcommerceAPI.Models;
-using AudiophileEcommerceAPI.Services;
+﻿using Audiophile.Application.Services;
+using Audiophile.Application.DTOs;
+
 using Microsoft.AspNetCore.Mvc;
 
 namespace AudiophileEcommerceAPI.Controllers
@@ -8,18 +9,18 @@ namespace AudiophileEcommerceAPI.Controllers
     [Route("api/[controller]")]
     public class ProductsController: ControllerBase
     {
-        private readonly IProductService _productService;
-        public ProductsController(IProductService productService)
+        private readonly ProductService _productService;
+        public ProductsController(ProductService productService)
         {
             _productService = productService;
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Product>>> GetAll()
+        public async Task<ActionResult<IEnumerable<ProductReadDTO>>> GetAll()
             => Ok(await _productService.GetAllProducts());
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Product?>> GetById(int id)
+        public async Task<ActionResult<ProductReadDTO?>> GetById(int id)
         {
             var product = await _productService.GetProductById(id);
             if (product == null) return NotFound();
@@ -27,22 +28,31 @@ namespace AudiophileEcommerceAPI.Controllers
         }
 
         [HttpGet("category/{category}")]
-        public async Task<ActionResult<IEnumerable<Product>>> GetByCategory(string category)
+        public async Task<ActionResult<IEnumerable<ProductReadDTO>>> GetByCategory(string category)
         {
             var products = await _productService.GetByCategory(category);
             return Ok(products);
         }
 
         [HttpPost]
-        public async Task<ActionResult<Product>> Create([FromBody] Product product)
+        public async Task<ActionResult<ProductReadDTO>> Create([FromBody] ProductCreateDTO product)
         {
             if (product == null) return BadRequest("Product cannot be null");
-            var createdProduct = await _productService.CreateProduct(product);
-            return CreatedAtAction(nameof(GetById), new { id = createdProduct.Id }, createdProduct);
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            try
+            {
+                var readDto = await _productService.CreateProduct(product);
+                return CreatedAtAction(nameof(GetById), new { id = readDto.Id }, readDto);
+
+            } catch (ArgumentException ex)
+              {
+                return BadRequest(new { error = ex.Message });
+              }
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, [FromBody] Product product)
+        public async Task<IActionResult> Update(int id, [FromBody] ProductUpdateDTO product)
         {
             if (product == null || product.Id != id) return BadRequest("Product ID mismatch");
             var updated = await _productService.UpdateProduct(product);
@@ -59,15 +69,9 @@ namespace AudiophileEcommerceAPI.Controllers
         }
 
         [HttpGet("filter")]
-        public async Task<ActionResult<IEnumerable<Product>>> GetFilteredProducts (bool? isPromotion = null, bool? isNew = null)
+        public async Task<ActionResult<IEnumerable<ProductReadDTO>>> GetFilteredProducts (bool? isPromotion = null, bool? isNew = null)
         {
-            var products = await _productService.GetAllProducts();
-
-            if (isPromotion.HasValue)
-                products = products.Where(p => p.IsPromotion == isPromotion.Value).ToList();
-
-            if (isNew.HasValue)
-                products = products.Where(p => p.IsNew == isNew.Value).ToList();
+            var products = await _productService.GetFilteredProducts(isPromotion, isNew);
 
             return Ok(products);
         }

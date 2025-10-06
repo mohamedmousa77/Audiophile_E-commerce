@@ -10,7 +10,7 @@ namespace Audiophile.Domain.Interfaces
         Task<IEnumerable<Product>> GetByCategory(string category);
 
         Task<Product> CreateProduct(Product product);
-
+        Task<IEnumerable<Product>> GetFilteredProductsAsync(bool? isPromotion, bool? isNew);
         Task<bool> UpdateProduct(Product product);
 
         Task<bool> DeleteProduct(int id);

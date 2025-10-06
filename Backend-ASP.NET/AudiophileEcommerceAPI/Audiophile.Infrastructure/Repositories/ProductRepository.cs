@@ -19,14 +19,7 @@ namespace Audiophile.Infrastructure.Repositories
             _appDbContext.Products.Add(product);
             await _appDbContext.SaveChangesAsync();
 
-            return new ProductDTO
-            {
-                Id = product.Id,
-                Name = product.Name,
-                Price = product.Price,
-                ImageUrl = product.ImageUrl,
-                Category = product.Category,
-            }; 
+            return product;
         }
 
         public async Task<bool> DeleteProduct(int id)
@@ -52,16 +45,6 @@ namespace Audiophile.Infrastructure.Repositories
 
         public async Task<bool> UpdateProduct(Product product)
         {
-            var existingProduct = await _appDbContext.Products.FindAsync(product.Id);
-            if (existingProduct == null) return false;
-
-            existingProduct.Name = product.Name;
-            existingProduct.Description = product.Description;
-            existingProduct.Price = product.Price;
-            existingProduct.ImageUrl = product.ImageUrl;
-            existingProduct.Category = product.Category;
-            existingProduct.StockQuantity = product.StockQuantity;
-
             await _appDbContext.SaveChangesAsync();
             return true;
         }
@@ -72,5 +55,20 @@ namespace Audiophile.Infrastructure.Repositories
                 .Where(p => p.Category.ToLower() == category.ToLower())
                 .ToListAsync();
         }
+
+        public async Task<IEnumerable<Product>> GetFilteredProductsAsync(bool? isPromotion, bool? isNew)
+        {
+            IQueryable<Product> query = _appDbContext.Products;
+
+            if (isPromotion.HasValue)
+                query = query.Where(p => p.IsPromotion == isPromotion.Value);
+
+            if (isNew.HasValue)
+                query = query.Where(p => p.IsNew == isNew.Value);
+
+            // Solo qui viene eseguita la query sul DB!
+            return await query.ToListAsync();
+        }
+
     }
 }

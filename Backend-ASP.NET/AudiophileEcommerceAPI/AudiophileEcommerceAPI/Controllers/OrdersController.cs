@@ -1,6 +1,6 @@
-﻿using AudiophileEcommerceAPI.DTOs;
-using AudiophileEcommerceAPI.Services;
+﻿using Audiophile.Application.Services;
 using Microsoft.AspNetCore.Mvc;
+using static Audiophile.Application.DTOs.OrderDTO;
 
 namespace AudiophileEcommerceAPI.Controllers
 {
@@ -8,34 +8,32 @@ namespace AudiophileEcommerceAPI.Controllers
     [Route("api/[controller]")]
     public class OrdersController: ControllerBase
     {
-        private readonly IOrderService _orderService;
-        public OrdersController(IOrderService orderService)
+        private readonly OrderService _orderService;
+        public OrdersController(OrderService orderService)
         {
             _orderService = orderService;
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateOrder([FromBody] OrderDTO orderDTO)
+        public async Task<IActionResult> CreateOrder([FromBody] OrderCreateDTO newOrder)
         {
             try
             {
-                var order = await _orderService.CreateOrder(orderDTO);
-                return Ok(order);
+                var order = await _orderService.ProcessOrder(newOrder);
+                return CreatedAtAction(nameof(GetOrderById), new { id = order.Id }, order);
             }
-            catch (Exception ex)
+            catch (ArgumentException ex)
             {
                 return BadRequest(new { message = ex.Message });
             }
         }
         [HttpGet]
-        public async Task<IActionResult> GetAllOrders()
-        {
-            var orders = await _orderService.GetAllOrders();
-            return Ok(orders);
-        }
+        public async Task<ActionResult<IEnumerable<OrderReadDTO>>> GetAllOrders() =>
+           Ok(await _orderService.GetAllOrders());
+        
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetOrderById(int id)
+        public async Task<ActionResult<OrderReadDTO>> GetOrderById(int id)
         {
             var order = await _orderService.GetOrderById(id);
             if (order == null) return NotFound();
@@ -43,8 +41,9 @@ namespace AudiophileEcommerceAPI.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateOrder(int id, [FromBody] OrderDTO orderDto)
+        public async Task<IActionResult> UpdateOrder(int id, [FromBody] UpdateOrderDTO orderDto)
         {
+            if (orderDto == null || orderDto.OrderId != id) return BadRequest("Order Id mismatch");
             var updated = await _orderService.UpdateOrder(orderDto);
             return updated ? NoContent() : NotFound();
         }

@@ -3,7 +3,6 @@
 using Audiophile.Application.DTOs;
 using Audiophile.Domain.Interfaces;
 using Audiophile.Domain.Models;
-using System.Collections.Generic;
 
 namespace Audiophile.Application.Services
 {

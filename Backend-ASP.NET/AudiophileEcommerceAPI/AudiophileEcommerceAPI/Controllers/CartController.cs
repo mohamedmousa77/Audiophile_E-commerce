@@ -1,5 +1,5 @@
-﻿using AudiophileEcommerceAPI.DTOs;
-using AudiophileEcommerceAPI.Services;
+﻿using Audiophile.Application.Services;
+using static Audiophile.Application.DTOs.CartDTOs;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AudiophileEcommerceAPI.Controllers
@@ -15,60 +15,55 @@ namespace AudiophileEcommerceAPI.Controllers
             _cartService = cartService;
         }
 
-        [HttpPost("{customerId}/add")]
-        public async Task<ActionResult> AddToCart(int customerId, [FromBody] AddToCartDTO data)
+        [HttpPut("{customerId}/items")]
+        public async Task<ActionResult<CartReadDTO>> AddOrUpdateItem(int customerId, [FromBody] CartItemUpdateDTO dto)
         {
-            var result = await _cartService.AddToCart(customerId, data.ProductId, data.Quantity);
-            
-            return result 
-                ? Ok("Item added to cart successfully.")
-                : BadRequest("Failed to add item to cart.");
+            if (dto.CustomerId != customerId)
+            {
+                return BadRequest("Customer ID mismatch in URL and body");
+            }
+            try
+            {
+                var updatedCart = await _cartService.AddOrUpdate(dto);
+                return Ok(updatedCart);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new {message= ex.Message});
+            }
+        }
+
+        [HttpDelete("{customerId}/items/{productId}")]
+        public async Task<ActionResult<CartReadDTO>> RemoveItem(int customerId, int productId)
+        {
+            try
+            {
+                var updatedCart = await _cartService.RemoveItem(customerId, productId);
+                return Ok(updatedCart);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "An error occurred while removing the item.");
+            }
         }
 
         [HttpGet("{customerId}")]
-        public async Task<ActionResult> GetCart(int customerId)
+        public async Task<ActionResult<CartReadDTO>> GetCartByCustomerID(int customerId)
         {
-            var cart = await _cartService.GetCartByCustomerId(customerId);
-            if (cart != null)
+            var cart = await _cartService.GetCart(customerId);
+            if (cart == null)
             {
-                return Ok(cart);
+                return NotFound("Cart not found or empty.");
             }
-            return NotFound("Cart not found.");
-        }
-
-        [HttpDelete("{customerId}/remove/{productId}")]
-        public async Task<ActionResult> RemoveFromCart(int customerId, int productId)
-        {
-            var result = await _cartService.RemoveFromCart(customerId, productId);
-            if (result)
-            {
-                return Ok("Item removed from cart successfully.");
-            }
-            return BadRequest("Failed to remove item from cart.");
+            return Ok(cart);
         }
 
         [HttpDelete("{customerId}/clear")]
-        public async Task<ActionResult> ClearCart(int customerId)
+        public async Task<IActionResult> ClearCart(int customerId)
         {
-            var result = await _cartService.ClearCart(customerId);
-            if (result)
-            {
-                return Ok("Cart cleared successfully.");
-            }
-            return BadRequest("Failed to clear cart.");
-        }
-        [HttpPut("{customerId}/update/{productId}")]
-        public async Task<ActionResult> updateItem (int customerId, int productId, [FromBody] int quantity)
-        {
-            bool updatedItem = await _cartService.UpdateCartItem(customerId, productId, quantity);
-            if (updatedItem)
-            {
-                return Ok("Item quantity updated successfully");
-            } else
-            {
-                return BadRequest("Failed to update the item quantity.");
-            }
-        }
+            var cleared = await _cartService.ClearCart(customerId);
 
+            return cleared ? NoContent() : NotFound("Cart not found or failed to clear.");
+        }
     }
 }

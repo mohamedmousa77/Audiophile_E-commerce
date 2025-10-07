@@ -1,5 +1,13 @@
 ﻿namespace Audiophile.Domain.Models
 {
+    public enum OrderStatus
+    {
+        Pending,
+        Processing,
+        Shipped,
+        Delivered,
+        Cancelled
+    }
     public class Order
     {
         public int Id { get; set; }
@@ -10,9 +18,9 @@
         public decimal VAT { get; set; }
         public decimal Total { get; set; }
 
-        public string? Status { get; set; }
+        public OrderStatus Status { get; set; }
         public DateTime? UpdatedAt { get; set; }
-        public DateTime? CreatedAt { get; set; } = DateTime.Now;
+        public DateTime? CreatedAt { get; set; } = DateTime.UtcNow;
 
         public ICollection<OrderItem> Items { get; set; }
     }

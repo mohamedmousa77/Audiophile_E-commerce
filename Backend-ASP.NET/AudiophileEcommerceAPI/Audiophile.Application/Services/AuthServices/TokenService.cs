@@ -16,9 +16,16 @@ namespace Audiophile.Application.Services.AuthServices
         {
             _configuration = configuration;
 
+            var secret = _configuration["JwtSettings:Secret"]
+                    ?? throw new InvalidOperationException("JwtSettings:Secret non configurato");
+            
+            if (secret.Length < 32)
+            {
+                throw new InvalidOperationException(
+                    "JwtSettings:Secret deve essere almeno 32 caratteri (256 bit)");
+            }
             // Carica la chiave segreta e la codifica
-            _key = Encoding.UTF8.GetBytes(_configuration["JwtSettings:Secret"]
-                                           ?? throw new ArgumentNullException("JwtSettings:Secret not found."));
+            _key = Encoding.UTF8.GetBytes(secret);
         }
         public string GenerateToken(User user)
         {
@@ -49,10 +56,29 @@ namespace Audiophile.Application.Services.AuthServices
 
         public DateTime GetTokenExpiration(string token)
         {
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var jwtToken = tokenHandler.ReadToken(token) as JwtSecurityToken;
+            try
+            {
+                var tokenHandler = new JwtSecurityTokenHandler();
+                var validationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(_key),
+                    ValidateIssuer = true,
+                    ValidIssuer = _configuration["JwtSettings:Issuer"],
+                    ValidateAudience = true,
+                    ValidAudience = _configuration["JwtSettings:Audience"],
+                    ValidateLifetime = true
+                };
+                tokenHandler.ValidateToken(token, validationParameters, out SecurityToken validatedToken);
+                var jwtToken = validatedToken as JwtSecurityToken;
 
-            return jwtToken?.ValidTo ?? DateTime.UtcNow;
+                return jwtToken?.ValidTo ?? DateTime.UtcNow;
+            }
+            catch
+            {
+                return DateTime.UtcNow; // Token non valido
+            }
+
         }
     }
 }

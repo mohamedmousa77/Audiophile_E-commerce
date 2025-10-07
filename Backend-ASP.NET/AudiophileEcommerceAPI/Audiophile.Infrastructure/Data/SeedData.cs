@@ -4,7 +4,8 @@
 💡 Serve soprattutto in ambienti di test o demo per evitare un database vuoto.
  */
 
-using AudiophileEcommerceAPI.Models;
+using Audiophile.Domain.Models;
+using Audiophile.Infrastructure.Data;
 
 namespace AudiophileEcommerceAPI.Data
 {

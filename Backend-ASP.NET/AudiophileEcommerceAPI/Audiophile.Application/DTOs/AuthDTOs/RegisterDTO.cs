@@ -14,6 +14,8 @@ namespace Audiophile.Application.DTOs.Auth
 
         [Required(ErrorMessage = "La password è obbligatoria")]
         [StringLength(100, MinimumLength = 8, ErrorMessage = "La password deve essere tra 8 e 100 caratteri")]
+        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$",
+            ErrorMessage = "La password deve contenere almeno: 1 maiuscola, 1 minuscola, 1 numero, 1 carattere speciale")]
         public string Password { get; set; } = string.Empty;
 
         [Phone(ErrorMessage = "Formato telefono non valido")]

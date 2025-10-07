@@ -25,7 +25,7 @@ namespace Audiophile.Application.Services
         {
             if (dto.Quantity <= 0) 
             {
-                return await RemoveItem(dto.CustomerID, dto.ProductID);
+                return await RemoveItem(dto.CustomerId, dto.ProductID);
             }
 
             var product = await _productRepository.GetProductById(dto.ProductID);
@@ -38,12 +38,12 @@ namespace Audiophile.Application.Services
                 throw new ArgumentException($"Stock insufficiente per il prodotto ID {dto.ProductID}. Disponibile: {product.StockQuantity}");
             }
 
-            var cart = await _cartRepository.GetCartByCustomerId(dto.CustomerID);
+            var cart = await _cartRepository.GetCartByCustomerId(dto.CustomerId);
             if (cart == null)
             {
                 cart = new Cart
                 {
-                    CustomerInfoId = dto.CustomerID,
+                    CustomerInfoId = dto.CustomerId,
                     Items = new List<CartItem>()
                 };
             }

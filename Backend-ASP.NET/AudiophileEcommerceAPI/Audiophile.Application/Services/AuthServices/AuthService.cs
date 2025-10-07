@@ -1,6 +1,7 @@
 ﻿using Audiophile.Application.DTOs.Auth;
 using Audiophile.Domain.Interfaces;
 using Audiophile.Domain.Models;
+using Microsoft.Extensions.Logging;
 
 //using Microsoft.Extensions.Configuration;
 
@@ -11,50 +12,70 @@ namespace Audiophile.Application.Services.AuthServices
         private readonly IAuthRepository _authRepository;
         private readonly ITokenService _tokenService;
         private readonly IPasswordHasher _passwordHasher;
+        private readonly ILogger<AuthService> _logger;
 
-        public AuthService(IAuthRepository authRepository, ITokenService tokenService, IPasswordHasher passwordHasher)
+        public AuthService(IAuthRepository authRepository, ITokenService tokenService, IPasswordHasher passwordHasher, ILogger<AuthService> logger)
         {
             _authRepository = authRepository;
             _tokenService = tokenService;
             _passwordHasher = passwordHasher;
+            _logger = logger;
+            
         }
         public async Task<AuthResultDTO> RegisterAsync(RegisterDTO registerDTO)
         {
             if (await _authRepository.UserExistsByEmailAsync(registerDTO.Email))
             {
-                throw new ArgumentException("Un utente con questa email è già registrato.");
+                return new AuthResultDTO
+                {
+                    Success = false,
+                    Message = "Un utente con questa email è già registrato."
+                };
             }
 
-            string passwordHash = _passwordHasher.HashPassword(registerDTO.Password);
-
-            var user = new User
+            try
             {
-                Email = registerDTO.Email,
-                PasswordHash = passwordHash,
-                Role = "Customer",
-                Phone = registerDTO.Phone,
-                CreatedAt = DateTime.UtcNow
-            };
+                string passwordHash = _passwordHasher.HashPassword(registerDTO.Password);
 
-            var createdUser = await _authRepository.RegisterAsync(user);
-
-            string token = _tokenService.GenerateToken(createdUser);
-
-            return new AuthResultDTO
-            {
-                Success = true,
-                Token = token,
-                Message = "Registrazione completata con successo",
-                Expiration = _tokenService.GetTokenExpiration(token),
-                User = new UserDTO
+                var user = new User
                 {
-                    Id = createdUser.Id,
-                    FullName = createdUser.FullName,
-                    Email = createdUser.Email,
-                    Phone = createdUser.Phone,
-                    Role = createdUser.Role,
-                }
-            };
+                    Email = registerDTO.Email,
+                    PasswordHash = passwordHash,
+                    Role = "Customer",
+                    Phone = registerDTO.Phone,
+                    FullName = registerDTO.FullName,
+                    CreatedAt = DateTime.UtcNow
+                };
+
+                var createdUser = await _authRepository.RegisterAsync(user);
+
+                string token = _tokenService.GenerateToken(createdUser);
+
+                return new AuthResultDTO
+                {
+                    Success = true,
+                    Token = token,
+                    Message = "Registrazione completata con successo",
+                    Expiration = _tokenService.GetTokenExpiration(token),
+                    User = new UserDTO
+                    {
+                        Id = createdUser.Id,
+                        FullName = createdUser.FullName,
+                        Email = createdUser.Email,
+                        Phone = createdUser.Phone,
+                        Role = createdUser.Role,
+                    }
+                };
+            } 
+            catch (Exception)
+            {
+                // Log l'errore (usa ILogger)
+                return new AuthResultDTO
+                {
+                    Success = false,
+                    Message = "Si è verificato un errore durante la registrazione."
+                };
+            }
         }
 
         public async Task<AuthResultDTO> LoginAsync(LoginDTO loginDTO)
@@ -63,6 +84,7 @@ namespace Audiophile.Application.Services.AuthServices
 
             if (user == null)
             {
+                _logger.LogWarning("Tentativo di login fallito per email: {Email}", loginDTO.Email);  // ✅
                 return new AuthResultDTO
                 {
                     Success = false,
@@ -74,12 +96,15 @@ namespace Audiophile.Application.Services.AuthServices
 
             if (!isPasswordValid)
             {
+                _logger.LogWarning("Password errata per utente: {UserId}", user.Id);
                 return new AuthResultDTO
                 {
                     Success = false,
                     Message = "Email o password non corretti"
                 };
             }
+
+            _logger.LogInformation("Login riuscito per utente: {UserId}", user.Id);
 
             string token = _tokenService.GenerateToken(user);
 

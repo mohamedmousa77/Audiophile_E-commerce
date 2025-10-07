@@ -2,6 +2,7 @@
 using Audiophile.Application.Services;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -46,7 +47,7 @@ namespace AudiophileEcommerceAPI.Controllers
             }  
         }
 
-
+        [EnableRateLimiting("fixed")]
         [HttpPost("login")]
         [ProducesResponseType(typeof(AuthResultDTO), 200)]
         [ProducesResponseType(400)]

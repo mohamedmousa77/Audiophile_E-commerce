@@ -4,6 +4,11 @@ namespace Audiophile.Domain.Interfaces
 {
     public interface IOrderRepository
     {
+
+        // Transaction management
+        Task BeginTransactionAsync();
+        Task CommitTransactionAsync();
+        Task RollbackTransactionAsync();
         Task<IEnumerable<Order>> GetAllOrders();
         Task<Order?> GetOrderById(int id);
         Task<Order> CreateOrder(Order order);

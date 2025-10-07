@@ -1,22 +1,27 @@
 ﻿using Audiophile.Application.Services;
 using Audiophile.Application.Services.AuthServices;
-using Audiophile.Infrastructure.Repositories;
 using Audiophile.Domain.Interfaces;
 using Audiophile.Infrastructure.Data;
+using Audiophile.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Database
+// ====================================
+//          DATABASE Config
+// ====================================
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(connectionString));
+    options.UseNpgsql(connectionString));
 
+// ====================================
+//      Repositories & Services (DI)
+// ====================================
 
-// Repositories & Services (DI)
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 
@@ -31,7 +36,9 @@ builder.Services.AddScoped<CartService>();
 
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 
-// JWT Authentication
+// ====================================
+//      JWT Authentication
+// ====================================
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
 var secretKey = jwtSettings["SecretKey"] ?? throw new InvalidOperationException("JWT SecretKey mancante");
 
@@ -53,8 +60,31 @@ builder.Services.AddAuthentication(options =>
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
     };
 });
+// ====================================
+//          Rate Limiting (Security)
+// ====================================
+builder.Services.AddRateLimiter(options =>
+{
+    options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(httpContext =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            partitionKey: httpContext.User.Identity?.Name ?? httpContext.Request.Headers.Host.ToString(),
+            factory: partition => new FixedWindowRateLimiterOptions
+            {
+                AutoReplenishment = true,
+                PermitLimit = 10,
+                QueueLimit = 0,
+                Window = TimeSpan.FromMinutes(1)
+            }));
 
-
+    options.OnRejected = async (context, token) =>
+    {
+        context.HttpContext.Response.StatusCode = 429;
+        await context.HttpContext.Response.WriteAsJsonAsync(new
+        {
+            error = "Troppi tentativi. Riprova tra 1 minuto."
+        }, cancellationToken: token);
+    };
+});
 
 
 // Configuration base:
@@ -102,6 +132,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseRateLimiter();
 app.MapControllers();
 
 app.Run();

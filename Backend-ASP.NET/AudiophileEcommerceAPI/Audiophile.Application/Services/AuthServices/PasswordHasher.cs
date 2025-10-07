@@ -2,7 +2,7 @@
 
 namespace Audiophile.Application.Services.AuthServices
 {
-    internal class PasswordHasher : IPasswordHasher
+    public class PasswordHasher : IPasswordHasher
     {
         public string HashPassword(string password)
         {

@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Identity.Data;
+﻿using Audiophile.Application.DTOs.Auth;
+using Audiophile.Application.Services;
+using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -21,27 +23,58 @@ namespace AudiophileEcommerceAPI.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] RegisterDto dto)
+        [ProducesResponseType(typeof(AuthResultDTO), 200)]
+        [ProducesResponseType(400)]
+        public async Task<IActionResult> Register([FromBody] RegisterDTO dto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var result = await _authService.RegisterCustomer(dto);
-            if (!result.Success)
-                return BadRequest(result.Message);        
-
-            return Ok(new { token = result.Token });
+            try
+            {
+                var result = await _authService.RegisterAsync(dto);
+                return Ok(result);
+            }
+            catch (ArgumentException ex)
+            {
+                // Cattura errori di business (es. "Utente già registrato")
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, "Si è verificato un errore durante la registrazione.");
+            }  
         }
 
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginRequest request)
-        {
-            var result = await _authService.AuthenticateCustomer (request.Email, request.Password);
-            if (!result.Success)
-                return Unauthorized(result);
+        [ProducesResponseType(typeof(AuthResultDTO), 200)]
+        [ProducesResponseType(400)]
 
-            return Ok(result);
+        public async Task<IActionResult> Login([FromBody] LoginDTO dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            try
+            {
+                var result = await _authService.LoginAsync(dto);
+
+                if (!result.Success)
+                    return Unauthorized(new { message = result.Message });
+
+                return Ok(result);
+            }
+            catch (ArgumentException)
+            {
+                return BadRequest(new { message = "Email o Password non valide." });
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, "Si è verificato un errore durante l'accesso.");
+            }
+
+
         }
     }
 }

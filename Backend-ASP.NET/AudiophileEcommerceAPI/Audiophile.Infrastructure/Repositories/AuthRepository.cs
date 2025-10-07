@@ -3,7 +3,7 @@ using Audiophile.Domain.Models;
 using Audiophile.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
-namespace AudiophileEcommerceAPI.Services
+namespace Audiophile.Infrastructure.Repositories
 {
     public class AuthRepository : IAuthRepository
     {

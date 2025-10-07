@@ -21,7 +21,8 @@ namespace Audiophile.Infrastructure.Data
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
         public DbSet<Product> Products { get; set; }
-        public DbSet<CustomerInfo> Customers { get; set; }
+        public DbSet<CustomerInfo> CustomerInfos { get; set; }
+        public DbSet<User> Users { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<Cart> Carts { get; set; }
@@ -31,34 +32,93 @@ namespace Audiophile.Infrastructure.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Order>()
-                .Property(o => o.Shipping)
-                .HasColumnType("decimal(18,2)");
 
-            modelBuilder.Entity<Order>()
-                .Property(o => o.Subtotal)
-                .HasColumnType("decimal(18,2)");
+            // ===== CONFIGURAZIONE USER (Autenticazione) =====
+            modelBuilder.Entity<User>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.HasIndex(e => e.Email).IsUnique();
+                entity.Property(e => e.Email).IsRequired().HasMaxLength(255);
+                entity.Property(e => e.FullName).IsRequired().HasMaxLength(100);
+                entity.Property(e => e.PasswordHash).IsRequired();
+                entity.Property(e => e.Phone).HasMaxLength(20);
+            });
 
-            modelBuilder.Entity<Order>()
-                .Property(o => o.Total)
-                .HasColumnType("decimal(18,2)");
+            // ===== CONFIGURAZIONE CUSTOMERINFO (Dati Spedizione) =====
+            modelBuilder.Entity<CustomerInfo>(entity =>
+            {
+                entity.HasKey(c => c.Id);
 
-            modelBuilder.Entity<Order>()
-                .Property(o => o.VAT)
-                .HasColumnType("decimal(18,2)");
+                entity.HasOne<User>()
+                    .WithMany()
+                    .HasForeignKey("UserId")
+                    .IsRequired()
+                    .OnDelete(DeleteBehavior.SetNull);
+            });
 
-            modelBuilder.Entity<OrderItem>()
-                .Property(i => i.UnitPrice)
-                .HasColumnType("decimal(18,2)");
+            // ===== CONFIGURAZIONE ORDER =====
+            modelBuilder.Entity<Order>(entity =>
+            {
+                entity.Property(o => o.Shipping).HasColumnType("decimal(18,2)");
+                entity.Property(o => o.Subtotal).HasColumnType("decimal(18,2)");
+                entity.Property(o => o.Total).HasColumnType("decimal(18,2)");
+                entity.Property(o => o.VAT).HasColumnType("decimal(18,2)");
 
-            modelBuilder.Entity<Product>()
-                .Property(p => p.Price)
-                .HasColumnType("decimal(18,2)");
+                // Relazione con CustomerInfo
+                entity.HasOne<CustomerInfo>()
+                    .WithMany(ci => ci.Orders)
+                    .HasForeignKey("CustomerInfoId")
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
 
-            modelBuilder.Entity<CustomerInfo>()
-                .HasOne(c => c.Cart)
-                .WithOne()
-                .HasForeignKey<Cart>(c => c.CustomerInfoId);
+            // ===== CONFIGURAZIONE ORDERITEM =====
+            modelBuilder.Entity<OrderItem>(entity =>
+            {
+                entity.Property(i => i.UnitPrice).HasColumnType("decimal(18,2)");
+
+                // Relazione con Order
+                entity.HasOne<Order>()
+                    .WithMany()
+                    .HasForeignKey("OrderId")
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                // Relazione con Product
+                entity.HasOne<Product>()
+                    .WithMany()
+                    .HasForeignKey("ProductId")
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            // ===== CONFIGURAZIONE PRODUCT =====
+            modelBuilder.Entity<Product>(entity =>
+            {
+                entity.Property(p => p.Price).HasColumnType("decimal(18,2)");
+            });
+
+            // ===== CONFIGURAZIONE CART =====
+            modelBuilder.Entity<Cart>(entity =>
+            {
+                entity.HasKey(c => c.Id);
+            });
+
+            // ===== CONFIGURAZIONE CARTITEM =====
+            modelBuilder.Entity<CartItem>(entity =>
+            {
+                entity.HasKey(ci => ci.Id);
+
+                // Relazione con Cart
+                entity.HasOne<Cart>()
+                    .WithMany()
+                    .HasForeignKey("CartId")
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                // Relazione con Product
+                entity.HasOne<Product>()
+                    .WithMany()
+                    .HasForeignKey("ProductId")
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+
         }
 
     }

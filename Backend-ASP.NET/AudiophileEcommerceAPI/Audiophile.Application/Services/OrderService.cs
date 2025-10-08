@@ -11,10 +11,10 @@ namespace Audiophile.Application.Services
     {
         private readonly IOrderRepository _orderRepository;
         private readonly IProductRepository _productRepository;
-        private readonly ILogger _logger;
+        private readonly ILogger<OrderService> _logger;
 
 
-        public OrderService(IOrderRepository orderRepository, IProductRepository productRepository, ILogger logger)
+        public OrderService(IOrderRepository orderRepository, IProductRepository productRepository, ILogger<OrderService> logger)
         {
             _orderRepository = orderRepository;
             _productRepository = productRepository;

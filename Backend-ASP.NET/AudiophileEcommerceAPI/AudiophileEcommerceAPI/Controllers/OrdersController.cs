@@ -1,5 +1,7 @@
 ﻿using Audiophile.Application.Services;
+using Audiophile.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using static Audiophile.Application.DTOs.OrderDTO;
 
 namespace AudiophileEcommerceAPI.Controllers
@@ -14,12 +16,21 @@ namespace AudiophileEcommerceAPI.Controllers
             _orderService = orderService;
         }
 
+        private int GetUserId()
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            return int.TryParse(userIdClaim, out int userId) ? userId : 0;
+        }
+
         [HttpPost]
         public async Task<IActionResult> CreateOrder([FromBody] OrderCreateDTO newOrder)
         {
+            var userId = GetUserId();
+            if (userId == 0)
+                return Unauthorized();
             try
             {
-                var order = await _orderService.ProcessOrder(newOrder);
+                var order = await _orderService.ProcessOrder(newOrder, userId);
                 return CreatedAtAction(nameof(GetOrderById), new { id = order.Id }, order);
             }
             catch (ArgumentException ex)
@@ -35,24 +46,55 @@ namespace AudiophileEcommerceAPI.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<OrderReadDTO>> GetOrderById(int id)
         {
-            var order = await _orderService.GetOrderById(id);
-            if (order == null) return NotFound();
-            return Ok(order);
+            var userId = GetUserId();
+            if (userId == 0)
+                return Unauthorized();
+            try
+            {
+
+                var order = await _orderService.GetOrderById(id, userId);
+                return Ok(order);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateOrder(int id, [FromBody] UpdateOrderDTO orderDto)
         {
             if (orderDto == null || orderDto.OrderId != id) return BadRequest("Order Id mismatch");
-            var updated = await _orderService.UpdateOrder(orderDto);
-            return updated ? NoContent() : NotFound();
+           var userId = GetUserId();
+            if (userId == 0)
+                return Unauthorized();
+            try
+            {
+                var updated = await _orderService.UpdateOrder(orderDto, userId);
+                return CreatedAtAction(nameof(GetOrderById), new { id = orderDto.OrderId}, updated);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteOrder(int id)
         {
-            var deleted = await _orderService.DeleteOrder(id);
-            return deleted ? NoContent() : NotFound();
+            var userId = GetUserId();
+            if (userId == 0)
+                return Unauthorized();
+
+            try
+            {
+                bool deleted = await _orderService.DeleteOrder(id, userId);
+                return Ok(deleted);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
     }

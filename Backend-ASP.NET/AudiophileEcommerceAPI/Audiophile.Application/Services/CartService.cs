@@ -4,7 +4,7 @@ using static Audiophile.Application.DTOs.CartDTOs;
 
 namespace Audiophile.Application.Services
 {
-    public class CartService
+    public class CartService : ICartService
     {
         private readonly ICartRepository _cartRepository;
         private readonly IProductRepository _productRepository;

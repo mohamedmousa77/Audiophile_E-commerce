@@ -6,7 +6,7 @@ using Audiophile.Domain.Models;
 
 namespace Audiophile.Application.Services
 {
-    public class ProductService
+    public class ProductService : IProductService
     {
         private readonly IProductRepository _productRepository;
 

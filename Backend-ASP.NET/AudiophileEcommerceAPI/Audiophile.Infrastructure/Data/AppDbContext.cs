@@ -33,9 +33,11 @@ namespace Audiophile.Infrastructure.Data
             base.OnModelCreating(modelBuilder);
 
             // ===== GLOBAL QUERY FILTER PER SOFT DELETE =====
-            //modelBuilder.Entity<Product>().HasQueryFilter(p => !p.IsDeleted);
+            modelBuilder.Entity<Product>().HasQueryFilter(p => !p.IsDeleted);
             //modelBuilder.Entity<Order>().HasQueryFilter(o => !o.IsDeleted);
-            //modelBuilder.Entity<User>().HasQueryFilter(u => !u.IsDeleted);
+            modelBuilder.Entity<User>().HasQueryFilter(u => !u.IsDeleted);
+
+
 
             // ===== CONFIGURAZIONE USER (Autenticazione) =====
             modelBuilder.Entity<User>(entity =>

@@ -17,12 +17,14 @@ namespace Audiophile.Application.Services.AuthServices
         private readonly ILogger<AuthService> _logger;
         private readonly IEmailService _emailService;
 
-        public AuthService(IAuthRepository authRepository, ITokenService tokenService, IPasswordHasher passwordHasher, ILogger<AuthService> logger)
+        public AuthService(IAuthRepository authRepository, ITokenService tokenService, IPasswordHasher passwordHasher,
+            ILogger<AuthService> logger, IEmailService emailService)
         {
             _authRepository = authRepository;
             _tokenService = tokenService;
             _passwordHasher = passwordHasher;
             _logger = logger;
+            _emailService = emailService;
 
         }
         public async Task<AuthResultDTO> RegisterAsync(RegisterDTO registerDTO)

@@ -3,6 +3,7 @@
 using Audiophile.Application.DTOs;
 using Audiophile.Domain.Interfaces;
 using Audiophile.Domain.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Audiophile.Application.Services
 {
@@ -15,7 +16,7 @@ namespace Audiophile.Application.Services
             _productRepository = productRepository;
         }
 
-        public async Task<ProductReadDTO> CreateProduct(ProductCreateDTO dto)
+        public async Task<ProductReadDTO> CreateProductAsync(ProductCreateDTO dto)
         {
             if (dto.Price <= 0)
             {
@@ -33,7 +34,7 @@ namespace Audiophile.Application.Services
                 IsPromotion = dto.IsPromotion
             };
 
-            var createdProduct = await _productRepository.CreateProduct(productEntity);
+            var createdProduct = await _productRepository.CreateProductAsync(productEntity);
 
             var readDto = new ProductReadDTO
             {
@@ -49,9 +50,9 @@ namespace Audiophile.Application.Services
             return readDto;
         }
 
-        public async Task<ProductReadDTO?> GetProductById (int id)
+        public async Task<ProductReadDTO?> GetProductByIdAsync(int id)
         {
-            var product = await _productRepository.GetProductById(id);
+            var product = await _productRepository.GetProductByIdAsync(id);
             if (product == null) return null;
 
             return new ProductReadDTO
@@ -66,9 +67,9 @@ namespace Audiophile.Application.Services
             };
         }
 
-        public async Task<bool> UpdateProduct(ProductUpdateDTO dto)
+        public async Task<IActionResult> UpdateProductAsync(int id ,ProductUpdateDTO dto)
         {
-            var existingProduct = await _productRepository.GetProductById(dto.Id);
+            var existingProduct = await _productRepository.GetProductByIdAsync(dto.Id);
             if (existingProduct == null) return false;
 
 
@@ -81,7 +82,7 @@ namespace Audiophile.Application.Services
             existingProduct.IsNew = dto.IsNew ?? false;
             existingProduct.IsPromotion = dto.IsPromotion ?? false;
 
-            return await _productRepository.UpdateProduct(existingProduct);
+            return await _productRepository.UpdateProductAsync(existingProduct);
         }
 
         public async Task<IEnumerable<Product>> GetByCategory(string category)
@@ -89,9 +90,9 @@ namespace Audiophile.Application.Services
             return await _productRepository.GetByCategory(category);
         }
 
-        public async Task<IEnumerable<ProductReadDTO>> GetAllProducts()
+        public async Task<IEnumerable<ProductReadDTO>> GetAllProductsAsync()
         {
-            var products = await _productRepository.GetAllProducts();
+            var products = await _productRepository.GetAllProductsAsync();
             return products.Select(p => new ProductReadDTO
             {
                 Id = p.Id,
@@ -103,12 +104,12 @@ namespace Audiophile.Application.Services
 
         }
 
-        public async Task<bool> DeleteProduct(int id)
+        public async Task<bool> DeleteProductAsync(int id)
         {
-            return await _productRepository.DeleteProduct(id);  
+            return await _productRepository.DeleteProductAsync(id);  
         }
 
-        public async Task<IEnumerable<ProductReadDTO>> GetFilteredProducts(bool? isPromotion, bool? isNew)
+        public async Task<IEnumerable<ProductReadDTO>> GetFilteredProductsAsync(bool? isPromotion, bool? isNew)
         {
             var products = await _productRepository.GetFilteredProductsAsync(isPromotion, isNew);
 

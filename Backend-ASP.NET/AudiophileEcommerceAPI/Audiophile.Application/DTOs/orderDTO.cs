@@ -1,4 +1,5 @@
 ﻿
+using Audiophile.Domain.Models;
 using System.ComponentModel.DataAnnotations;
 
 namespace Audiophile.Application.DTOs
@@ -97,6 +98,18 @@ namespace Audiophile.Application.DTOs
 
         }
 
+        public class CancelOrderDTO
+        {
+            [Required(ErrorMessage = "Il motivo della cancellazione è obbligatorio")]
+            [StringLength(500, MinimumLength = 10)]
+            public string Reason { get; set; } = string.Empty;
+        }
 
+        public class UpdateOrderStatusDTO
+        {
+            [Required]
+            [EnumDataType(typeof(OrderStatus))]
+            public string Status { get; set; } = string.Empty;
+        }
     }
 }

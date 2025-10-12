@@ -49,7 +49,7 @@ namespace Audiophile.Application.Services
 
                 foreach (var itemDto in dto.OrderItems)
                 {
-                    var product = await _productRepository.GetProductById(itemDto.ProductId);
+                    var product = await _productRepository.GetProductByIdAsync(itemDto.ProductId);
 
                     if(product == null)
                     {
@@ -75,7 +75,7 @@ namespace Audiophile.Application.Services
                     subtotal += product.Price * itemDto.Quantity;
 
                     product.StockQuantity -= itemDto.Quantity;
-                    await _productRepository.UpdateProduct(product);
+                    await _productRepository.UpdateProductAsync(product);
                 }
 
                 decimal shipping = 50m;
@@ -116,7 +116,7 @@ namespace Audiophile.Application.Services
         
         }
 
-        public async Task<OrderReadDTO?> GetOrderById(int orderId, int userId)
+        public async Task<OrderReadDTO?> GetOrderById(int orderId, int userId, bool isAdmin)
         {
             var order = await _orderRepository.GetOrderById(orderId);
 
@@ -135,7 +135,7 @@ namespace Audiophile.Application.Services
             return MapToReadDTO(order);
         }
 
-        public async Task<IEnumerable<OrderReadDTO>> GetAllOrders()
+        public async Task<IEnumerable<OrderReadDTO>> GetUserOrdersAsync(int userId, int pageNumber, int pageSize)
         {
             var orders = await _orderRepository.GetAllOrders();
             return orders.Select(MapToReadDTO).ToList();
@@ -205,11 +205,11 @@ namespace Audiophile.Application.Services
                     // Ripristina stock dei vecchi items
                     foreach (var oldItem in existingOrder.Items)
                     {
-                        var product = await _productRepository.GetProductById(oldItem.ProductId);
+                        var product = await _productRepository.GetProductByIdAsync(oldItem.ProductId);
                         if (product != null)
                         {
                             product.StockQuantity += oldItem.Quantity;
-                            await _productRepository.UpdateProduct(product);
+                            await _productRepository.UpdateProductAsync(product);
                         }
                     }
 
@@ -222,7 +222,7 @@ namespace Audiophile.Application.Services
 
                     foreach (var itemDto in dto.OrderItems)
                     {
-                        var product = await _productRepository.GetProductById(itemDto.ProductId);
+                        var product = await _productRepository.GetProductByIdAsync(itemDto.ProductId);
                         if (product == null || product.StockQuantity < itemDto.Quantity)
                         {
                             throw new ArgumentException(
@@ -238,7 +238,7 @@ namespace Audiophile.Application.Services
 
                         newSubtotal += product.Price * itemDto.Quantity;
                         product.StockQuantity -= itemDto.Quantity;
-                        await _productRepository.UpdateProduct(product);
+                        await _productRepository.UpdateProductAsync(product);
                     }
 
                     existingOrder.Items = newOrderItems;
@@ -264,7 +264,7 @@ namespace Audiophile.Application.Services
             }
         }
 
-        public async Task<bool> DeleteOrder(int orderId, int userId)
+        public async Task<bool> CancelOrderAsync(int orderId, int userId, string reason)
         {
             var order = await _orderRepository.GetOrderById(orderId);
 
@@ -289,11 +289,11 @@ namespace Audiophile.Application.Services
                 // Ripristina lo stock
                 foreach (var item in order.Items)
                 {
-                    var product = await _productRepository.GetProductById(item.ProductId);
+                    var product = await _productRepository.GetProductByIdAsync(item.ProductId);
                     if (product != null)
                     {
                         product.StockQuantity += item.Quantity;
-                        await _productRepository.UpdateProduct(product);
+                        await _productRepository.UpdateProductAsync(product);
                     }
                 }
 

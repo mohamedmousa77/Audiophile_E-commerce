@@ -216,14 +216,14 @@ namespace Audiophile.Infrastructure.Repositories
 
         public async Task<IEnumerable<Product>> GetByCategory(string category)
         {
-            return await _appDbContext.Products
+            return await Context.Products
                 .Where(p => p.Category.ToLower() == category.ToLower())
                 .ToListAsync();
         }
 
         public async Task<IEnumerable<Product>> GetFilteredProductsAsync(bool? isPromotion, bool? isNew)
         {
-            IQueryable<Product> query = _appDbContext.Products;
+            IQueryable<Product> query = Context.Products;
 
             if (isPromotion.HasValue)
                 query = query.Where(p => p.IsPromotion == isPromotion.Value);

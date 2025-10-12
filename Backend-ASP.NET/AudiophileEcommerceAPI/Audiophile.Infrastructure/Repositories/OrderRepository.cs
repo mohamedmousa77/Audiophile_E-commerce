@@ -15,6 +15,7 @@ namespace Audiophile.Infrastructure.Repositories
             _appDbContext = appDbContext; 
         }
 
+        // ===== CRUD OPERATIONS =====
         public async Task<Order> CreateOrder(Order order)
         {
             _appDbContext.CustomerInfos.Add(order.CustomerInfo);
@@ -23,6 +24,8 @@ namespace Audiophile.Infrastructure.Repositories
 
             await _appDbContext.Entry(order)
                 .Collection(o => o.Items)
+                .Query()
+                .Include(i => i.Product)
                 .LoadAsync();
 
             return order;
@@ -46,37 +49,18 @@ namespace Audiophile.Infrastructure.Repositories
                 .ToListAsync();
         }
 
-        //public async Task<IEnumerable<Order>> GetOrdersByUserIdAsync(int userId)
-        //{
-        //    return await _context.Orders
-        //        .Include(o => o.Items)
-        //            .ThenInclude(i => i.Product)
-        //        .Include(o => o.CustomerInfo)
-        //        .Where(o => o.CustomerInfo.UserId == userId)
-        //        .OrderByDescending(o => o.CreatedAt)
-        //        .ToListAsync();
-        //}
-
-        public async Task<bool> DeleteOrder(int id)
+        public async Task<IEnumerable<Order>> GetOrdersByUserIdAsync(int userId)
         {
-            var order = await _appDbContext.Orders
-                .Include(o => o.Items)
-                .FirstOrDefaultAsync(o => o.Id == id);
-
-            if (order == null) return false;
-
-            _appDbContext.OrderItems.RemoveRange(order.Items);
-            _appDbContext.Orders.Remove(order);
-
-            var customer = await _appDbContext.CustomerInfos.FindAsync(order.CustomerInfoId);
-            if (customer != null)
-            {
-                _appDbContext.CustomerInfos.Remove(customer);
-            }
-
-            await _appDbContext.SaveChangesAsync();
-            return true;
+            return await _appDbContext.Orders
+                  .Include(o => o.Items)
+                    .ThenInclude(i => i.Product)
+                .Include(o => o.CustomerInfo)
+                .Where(o => o.CustomerInfo.UserId == userId)
+                .OrderByDescending(o => o.CreatedAt)
+                .ToListAsync();
         }
+
+       
         public async Task<CustomerInfo?> GetCustomerByEmailAsync(string email)
         {
             return await _appDbContext.CustomerInfos
@@ -91,13 +75,34 @@ namespace Audiophile.Infrastructure.Repositories
             return true;
 
         }
+        public async Task<bool> DeleteOrder(int id)
+        {
+            var order = await _appDbContext.Orders
+               .Include(o => o.Items)
+               .FirstOrDefaultAsync(o => o.Id == id);
 
+            if (order == null)
+                return false;
+
+            _appDbContext.OrderItems.RemoveRange(order.Items);
+            _appDbContext.Orders.Remove(order);
+
+            var customer = await _appDbContext.CustomerInfos.FindAsync(order.CustomerInfoId);
+            if (customer != null)
+            {
+                _appDbContext.CustomerInfos.Remove(customer);
+            }
+
+            await _appDbContext.SaveChangesAsync();
+            return true;
+        }
         public async Task RemoveOrderItemsAsync(IEnumerable<OrderItem> items)
         {
             _appDbContext.OrderItems.RemoveRange(items);
-            await Task.CompletedTask;
+            await _appDbContext.SaveChangesAsync();
         }
 
+        // ===== TRANSACTION MANAGEMENT =====
         public async Task BeginTransactionAsync()
         {
             _transaction = await _appDbContext.Database.BeginTransactionAsync();
@@ -105,11 +110,21 @@ namespace Audiophile.Infrastructure.Repositories
 
         public async Task CommitTransactionAsync()
         {
-            if (_transaction  != null)
+            try
             {
-                await _transaction.CommitAsync();
-                await _transaction.DisposeAsync();
-                _transaction = null;
+                await _appDbContext.SaveChangesAsync();
+
+                if (_transaction != null)
+                {
+                    await _transaction.CommitAsync();
+                    await _transaction.DisposeAsync();
+                    _transaction = null;
+                }
+            }
+            catch
+            {
+                await RollbackTransactionAsync();
+                throw;
             }
         }
 

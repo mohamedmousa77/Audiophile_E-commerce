@@ -1,4 +1,4 @@
-﻿namespace AudiophileEcommerceAPI.Controllers
+﻿namespace Audiophile.Application.Services
 {
     public class PagedResult<T>
     {

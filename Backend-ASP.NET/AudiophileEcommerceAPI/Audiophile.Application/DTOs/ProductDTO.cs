@@ -33,6 +33,9 @@ namespace Audiophile.Application.DTOs
         public string Name { get; set; } = string.Empty;
         public decimal Price { get; set; }
         public string Category { get; set; } = string.Empty;
+        public int StockQuantity { get; set; }
+        public string? Description { get; set; }
+        public string? ImageUrl { get; set; }
         public bool IsNew { get; set; } = false; 
         public bool IsPromotion { get; set; } = false;
     }
@@ -44,6 +47,9 @@ namespace Audiophile.Application.DTOs
         public string Name { get; set; } = string.Empty;
         public decimal Price { get; set; }
         public string Category { get; set; } = string.Empty;
+        public string ImageUrl { get; set; } = string.Empty;
+        public int StockQuantity { get; set; }
+        public string Description { get; set; } = string.Empty;
         public bool IsInStock { get; set; }
         public bool IsNew { get; set; }
         public bool IsPromotion { get; set; }

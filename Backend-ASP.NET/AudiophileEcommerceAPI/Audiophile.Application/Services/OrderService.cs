@@ -23,6 +23,8 @@ namespace Audiophile.Application.Services
 
         public async Task<OrderReadDTO> ProcessOrder(OrderCreateDTO dto, int userId)
         {
+            _logger.LogInformation("Processing order for user {UserId}", userId);
+
             if (dto.OrderItems == null || !dto.OrderItems.Any())
             {
                 throw new ArgumentException("L'ordine deve contenere almeno un prodotto");
@@ -44,22 +46,23 @@ namespace Audiophile.Application.Services
                     ZipCode = dto.ZIPCode
                 };
 
+
                 List<OrderItem> orderItems = new List<OrderItem>();
                 decimal subtotal = 0;
 
                 foreach (var itemDto in dto.OrderItems)
                 {
-                    var product = await _productRepository.GetProductByIdAsync(itemDto.ProductId);
+                    var product = await _productRepository.GetProductByIdWithLockAsync(itemDto.ProductId);
 
-                    if(product == null)
+                    if (product == null)
                     {
-                        throw new ArgumentException($"Prodotto con ID {itemDto.ProductId} non trovato");
+                        throw new KeyNotFoundException($"Prodotto con ID {itemDto.ProductId} non trovato");
                     }
 
                     if (product.StockQuantity < itemDto.Quantity)
                     {
-                        throw new ArgumentException(
-                            $"Stock insufficiente per {product.Name}. " +
+                        throw new InvalidOperationException(
+                            $"Stock insufficiente per '{product.Name}'. " +
                             $"Disponibili: {product.StockQuantity}, Richiesti: {itemDto.Quantity}");
                     }
 
@@ -75,10 +78,15 @@ namespace Audiophile.Application.Services
                     subtotal += product.Price * itemDto.Quantity;
 
                     product.StockQuantity -= itemDto.Quantity;
+                    product.UpdatedAt = DateTime.UtcNow;
                     await _productRepository.UpdateProductAsync(product);
+
+                    _logger.LogInformation(
+                       "Stock aggiornato per prodotto {ProductId}: {Quantity} unità sottratte",
+                       product.Id, itemDto.Quantity);
                 }
 
-                decimal shipping = 50m;
+                decimal shipping = CalculateShipping(subtotal);
                 decimal vat = subtotal * 0.20m;
                 decimal total = subtotal + vat + shipping;
 
@@ -124,23 +132,92 @@ namespace Audiophile.Application.Services
                 return null;
 
             // Verifica che l'ordine appartenga all'utente
-            if (order.CustomerInfo.UserId != userId)
+            if (!isAdmin && order.CustomerInfo.UserId != userId)
             {
                 _logger.LogWarning(
                     "Utente {UserId} ha tentato di accedere all'ordine {OrderId} di un altro utente",
                     userId, orderId);
-                return null;
+                throw new UnauthorizedAccessException("Non hai il permesso di visualizzare questo ordine");
             }
 
             return MapToReadDTO(order);
         }
 
-        public async Task<IEnumerable<OrderReadDTO>> GetUserOrdersAsync(int userId, int pageNumber, int pageSize)
+        public async Task<PagedResult<OrderReadDTO>> GetUserOrdersAsync(int userId, int pageNumber, int pageSize)
         {
-            var orders = await _orderRepository.GetAllOrders();
-            return orders.Select(MapToReadDTO).ToList();
+            var orders = await _orderRepository.GetOrdersByUserIdAsync(userId);
+            var totalCount = orders.Count();
+
+            var paginatedOrders = orders
+                .OrderByDescending(o => o.CreatedAt)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            return new PagedResult<OrderReadDTO>
+            {
+                Items = paginatedOrders.Select(MapToReadDTO),
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                TotalCount = totalCount,
+                TotalPages = (int)Math.Ceiling(totalCount / (double)pageSize)
+            };
         }
 
+        public async Task<PagedResult<OrderReadDTO>> GetAllOrdersAsync(int pageNumber, int pageSize, string? status)
+        {
+            var allOrders = await _orderRepository.GetAllOrders();
+
+            // Filtra per status se fornito
+            if (!string.IsNullOrEmpty(status) && Enum.TryParse<OrderStatus>(status, out var orderStatus))
+            {
+                allOrders = allOrders.Where(o => o.Status == orderStatus);
+            }
+
+            var totalCount = allOrders.Count();
+
+            var paginatedOrders = allOrders
+                .OrderByDescending(o => o.CreatedAt)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            return new PagedResult<OrderReadDTO>
+            {
+                Items = paginatedOrders.Select(MapToReadDTO),
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                TotalCount = totalCount,
+                TotalPages = (int)Math.Ceiling(totalCount / (double)pageSize)
+            };
+
+        }
+
+
+        public async Task<OrderReadDTO?> UpdateOrderStatusAsync(int orderId, string status)
+        {
+            var order = await _orderRepository.GetOrderById(orderId);
+
+            if (order == null)
+                return null;
+
+            if (!Enum.TryParse<OrderStatus>(status, out var newStatus))
+            {
+                throw new ArgumentException($"Status '{status}' non valido");
+            }
+
+            order.Status = newStatus;
+            order.UpdatedAt = DateTime.UtcNow;
+
+            await _orderRepository.UpdateOrder(order, order.CustomerInfo);
+
+            _logger.LogInformation(
+                "Status ordine {OrderId} aggiornato a {Status}",
+                orderId, status
+            );
+
+            return MapToReadDTO(order);
+        }
 
         public async Task<bool> UpdateOrder(UpdateOrderDTO dto, int userId)
         {
@@ -164,7 +241,6 @@ namespace Audiophile.Application.Services
                 return false;
             }
 
-            // Non permettere modifiche agli ordini già consegnati o cancellati
             if (existingOrder.Status == OrderStatus.Delivered ||
                 existingOrder.Status == OrderStatus.Cancelled)
             {
@@ -222,7 +298,7 @@ namespace Audiophile.Application.Services
 
                     foreach (var itemDto in dto.OrderItems)
                     {
-                        var product = await _productRepository.GetProductByIdAsync(itemDto.ProductId);
+                        var product = await _productRepository.GetProductByIdWithLockAsync(itemDto.ProductId);
                         if (product == null || product.StockQuantity < itemDto.Quantity)
                         {
                             throw new ArgumentException(
@@ -277,9 +353,10 @@ namespace Audiophile.Application.Services
             if (order.Status == OrderStatus.Shipped || order.Status == OrderStatus.Delivered)
             {
                 _logger.LogWarning(
-                    "Tentativo di eliminare ordine {OrderId} con status {Status}",
+                    "Tentativo di cancellare ordine {OrderId} con status {Status}",
                     orderId, order.Status);
-                return false;
+                throw new InvalidOperationException(
+                    $"Non puoi cancellare un ordine con status '{order.Status}'");
             }
 
             try
@@ -297,11 +374,18 @@ namespace Audiophile.Application.Services
                     }
                 }
 
-                var result = await _orderRepository.DeleteOrder(orderId);
+                order.Status = OrderStatus.Cancelled;
+                order.UpdatedAt = DateTime.UtcNow;
+                order.CancellationReason = reason;
+
+                await _orderRepository.UpdateOrder(order, order.CustomerInfo);
                 await _orderRepository.CommitTransactionAsync();
 
-                _logger.LogInformation("Ordine {OrderId} eliminato con successo", orderId);
-                return result;
+                _logger.LogInformation(
+                    "Ordine {OrderId} cancellato da utente {UserId}. Motivo: {Reason}",
+                    orderId, userId, reason);
+
+                return true;
             }
             catch (Exception ex)
             {
@@ -309,6 +393,12 @@ namespace Audiophile.Application.Services
                 _logger.LogError(ex, "Errore durante l'eliminazione dell'ordine {OrderId}", orderId);
                 throw;
             }
+        }
+
+        // ===== HELPER METHOD =====
+        private decimal CalculateShipping(decimal subtotal)
+        {
+            return subtotal >= 100 ? 0 : 50m;
         }
 
         private OrderReadDTO MapToReadDTO(Order order)
@@ -328,7 +418,6 @@ namespace Audiophile.Application.Services
                 VAT = order.VAT,
                 Total = order.Total,
                 Status = order.Status.ToString(),
-                //CreatedAt = order.CreatedAt,
                 UpdatedAt = order.UpdatedAt,
                 OrderItems = order.Items.Select(item => new ReadOrderItemDTO
                 {
@@ -339,6 +428,7 @@ namespace Audiophile.Application.Services
                     UnitPrice = item.UnitPrice,
                     TotalPrice = item.UnitPrice * item.Quantity
                 }).ToList()
+
             };
         }
 

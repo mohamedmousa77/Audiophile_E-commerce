@@ -11,8 +11,6 @@
         public int StockQuantity { get; set; }
         public bool IsPromotion { get; set; }
         public bool IsNew { get; set; }
-
-        // ✅ Soft Delete
         public bool IsDeleted { get; set; }
         public DateTime? DeletedAt { get; set; }
 

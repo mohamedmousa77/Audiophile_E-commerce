@@ -9,13 +9,20 @@ namespace Audiophile.Domain.Interfaces
         Task BeginTransactionAsync();
         Task CommitTransactionAsync();
         Task RollbackTransactionAsync();
-        Task<IEnumerable<Order>> GetAllOrders();
-        Task<Order?> GetOrderById(int id);
+
+        // CRUD operations
         Task<Order> CreateOrder(Order order);
-        Task<CustomerInfo?> GetCustomerByEmailAsync(string email);
+        Task<Order?> GetOrderById(int id);
+        Task<IEnumerable<Order>> GetOrdersByUserIdAsync(int userId);
+        Task<IEnumerable<Order>> GetAllOrders();
         Task<bool> UpdateOrder(Order order, CustomerInfo customer);
-        Task RemoveOrderItemsAsync(IEnumerable<OrderItem> items);
         Task<bool> DeleteOrder(int id);
+
+        // Customer operations
+        Task<CustomerInfo?> GetCustomerByEmailAsync(string email);
+
+        // Order items
+        Task RemoveOrderItemsAsync(IEnumerable<OrderItem> items);
 
     }
 }

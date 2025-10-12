@@ -15,6 +15,7 @@ namespace Audiophile.Infrastructure.Repositories
         private const string CacheKeyPrefix = "product_";
         private const int CacheExpirationMinutes = 60;
 
+
         public ProductRepository(
             AppDbContext context,
             IDistributedCache cache,
@@ -41,6 +42,7 @@ namespace Audiophile.Infrastructure.Repositories
 
             // Soft delete
             product.IsDeleted = true;
+            product.DeletedAt = DateTime.UtcNow;
             await Context.SaveChangesAsync();
 
             // Invalidate cache
@@ -78,52 +80,15 @@ namespace Audiophile.Infrastructure.Repositories
         }
 
 
-        public async Task<IEnumerable<Product>> GetAllProductsAsync(
-            int pageNumber = 1,
-            int pageSize = 20,
-            string? category = null,
-            decimal? minPrice = null,
-            decimal? maxPrice = null,
-            string? searchTerm = null)
+        public async Task<IEnumerable<Product>> GetAllProductsAsync()
         {
-            var query = Context.Products.AsQueryable();
-
-            // Filtri
-            if (!string.IsNullOrEmpty(category))
-            {
-                query = query.Where(p => p.Category == category);
-            }
-
-            if (minPrice.HasValue)
-            {
-                query = query.Where(p => p.Price >= minPrice.Value);
-            }
-
-            if (maxPrice.HasValue)
-            {
-                query = query.Where(p => p.Price <= maxPrice.Value);
-            }
-
-            if (!string.IsNullOrEmpty(searchTerm))
-            {
-                query = query.Where(p =>
-                    p.Name.Contains(searchTerm) ||
-                    p.Description.Contains(searchTerm));
-            }
-
-            // Pagination
-            return await query
-                .OrderBy(p => p.Name)
-                .Skip((pageNumber - 1) * pageSize)
-                .Take(pageSize)
+            return await Context.Products
+                .Where(p => !p.IsDeleted)
                 .ToListAsync();
-
         }
 
         public async Task<Product?> GetProductByIdAsync(int id)
         {
-
-
             // Try cache first
             var cacheKey = $"{CacheKeyPrefix}{id}";
             var cachedProduct = await _cache.GetStringAsync(cacheKey);
@@ -135,7 +100,8 @@ namespace Audiophile.Infrastructure.Repositories
             }
 
             // Not in cache, get from database
-            var product = await Context.Products.FindAsync(id);
+            var product = await Context.Products.
+                FirstOrDefaultAsync(p => p.Id == id && !p.IsDeleted);
 
             if (product != null)
             {
@@ -217,7 +183,7 @@ namespace Audiophile.Infrastructure.Repositories
         public async Task<IEnumerable<Product>> GetByCategory(string category)
         {
             return await Context.Products
-                .Where(p => p.Category.ToLower() == category.ToLower())
+                .Where(p => p.Category.ToLower() == category.ToLower() && !p.IsDeleted)
                 .ToListAsync();
         }
 

@@ -6,9 +6,11 @@ namespace Audiophile.Application.DTOs.Auth
     {
         public bool Success { get; set; }
         public string? Token { get; set; }
+        public string? RefreshToken { get; set; }
         public DateTime? Expiration {  get; set; }
         public string? Message { get; set; }
         public UserDTO? User { get; set; }
+        
 
     }
     public class UserDTO

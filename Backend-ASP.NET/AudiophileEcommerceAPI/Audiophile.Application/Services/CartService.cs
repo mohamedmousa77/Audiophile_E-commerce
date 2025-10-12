@@ -28,7 +28,7 @@ namespace Audiophile.Application.Services
                 return await RemoveItem(dto.CustomerId, dto.ProductID);
             }
 
-            var product = await _productRepository.GetProductById(dto.ProductID);
+            var product = await _productRepository.GetProductByIdAsync(dto.ProductID);
             if (product == null)
             {
                 throw new ArgumentException($"Prodotto con ID {dto.ProductID} non trovato.");

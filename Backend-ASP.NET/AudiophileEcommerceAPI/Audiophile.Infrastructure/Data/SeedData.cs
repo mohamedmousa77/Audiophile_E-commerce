@@ -5,18 +5,16 @@
  */
 
 using Audiophile.Domain.Models;
-using Audiophile.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 
-namespace AudiophileEcommerceAPI.Data
+namespace Audiophile.Infrastructure.Data
 {
     public static class SeedData
     {
-        public static async Task Initialize(IServiceProvider serviceProvider)
+        public static async Task Initialize(AppDbContext context)
         {
-            using var context = new AppDbContext(
-                serviceProvider.GetRequiredService<DbContextOptions<AppDbContext>>());
 
             // ===== SEED USERS =====
             if (!await context.Users.AnyAsync())

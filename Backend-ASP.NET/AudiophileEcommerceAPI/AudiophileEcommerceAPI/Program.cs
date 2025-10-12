@@ -1,5 +1,4 @@
 ﻿using Audiophile.Infrastructure.Data;
-using AudiophileEcommerceAPI.Data;
 using AudiophileEcommerceAPI.Extensions;
 using AudiophileEcommerceAPI.Middleware;
 using Microsoft.EntityFrameworkCore;
